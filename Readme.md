@@ -54,6 +54,50 @@ Database connection have 2 types:
 All ways remember database is always in another contienet.
 so when you talk with db take time, so always use (async and await) and (try and catch).
 
+# mongodb atlas and mongodb structure
+
+Hierarchy in MongoDB Atlas:
+
+1. Project:
+
+The top-level container in MongoDB Atlas. A project can contain multiple clusters (but only one free-tier cluster per project).
+A project organizes your resources, including databases, clusters, users, and network access configurations.
+
+2. Cluster:
+
+A cluster is a set of MongoDB servers (nodes) that handle your databases.
+Inside a project, you can have one or more clusters. Each cluster hosts databases.
+A free-tier project allows only one M0 (free-tier) cluster.
+
+3. Database:
+
+A database is a container inside a cluster. Each database holds collections.
+You can create multiple databases inside a cluster.
+
+4. Collection:
+
+A collection is a group of documents, similar to a table in a relational database.
+Collections are stored inside databases.
+Collections don’t enforce a schema, so documents in the same collection can have different structures.
+
+5. Document:
+
+A document is the individual data record, stored in JSON-like format (BSON in MongoDB).
+A document is similar to a row in a relational database.
+Documents are stored inside collections.
+
+
+Hierarchy Example:
+Project: MyProject
+
+Cluster: Cluster0
+Database: ecommerceDB
+Collection: products
+Document: {"_id": 1, "name": "Laptop", "price": 1000}
+Collection: users
+Document: {"_id": 101, "name": "John Doe", "email": "johndoe@example.com"}
+
+
 # dotenv 
 require('dotenv').config()          give path here ====>  // require('dotenv').config({path: './env'})
 
@@ -278,3 +322,21 @@ These abilities come from the enquiryModel schema or class.
 # without new 
 
 If you were able to add data to the database without using the new keyword and didn’t encounter any errors, it's likely because your library or framework (e.g., Mongoose in Node.js) has some flexibility built into how it handles objects. Let me explain why this works but why using new is still important.
+
+
+#### PHASE TWO ####
+
+mongoose pre hook
+when saving data just before that run that hook for encrypt
+
+perform operation on events validate, save, update, remove, delete, init
+
+using of this we can create the custom methods like above validate, save, update, remove, delete, init
+userSchema.methods
+
+access token dont store in db but refresh will store
+
+
+# jwt
+JWT (JSON Web Token) can be used as a Bearer Token in the context of authorization.
+who have token data will send

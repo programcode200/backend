@@ -8,6 +8,8 @@ const asyncHandler = (requestHandler) => {
 
 export default asyncHandler;
 
+
+
 // using try and catch
 // const asyncHandler = (fn) => async () =>{}
 
