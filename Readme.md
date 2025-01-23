@@ -340,3 +340,34 @@ access token dont store in db but refresh will store
 # jwt
 JWT (JSON Web Token) can be used as a Bearer Token in the context of authorization.
 who have token data will send
+
+# file system
+
+unlink(path) :- when file delete file become unlink.
+
+# multer
+This code configures and exports a file-upload handler using the Multer library in Node.js. Multer is middleware for handling multipart/form-data, which is primarily used for uploading files.
+
+multer.diskStorage is a function provided by Multer to configure how and where files should be stored on your disk.
+
+
+# 12
+# router and controller with debugging
+
+    - create route for user
+    - create controller for register user
+    - get userRoutes in app.js
+
+
+# 13 
+# register controller
+
+    - get user details from frontend
+    - validate that data, not emapty
+    - check if user already exist (username, email)
+    - check for images, avatar
+    - if available upload cludinary
+    - create user object - create entry in db
+    - remove password and refresh token field from respone
+    - check for user creation
+    - return res

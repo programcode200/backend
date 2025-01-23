@@ -49,6 +49,8 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+
+
 //dont use callback fn use normal fn because we need to access the context(this), and take to encrypt so use async and await
 userSchema.pre("save", async function (next) {
   //middleware
