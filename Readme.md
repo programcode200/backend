@@ -371,3 +371,17 @@ multer.diskStorage is a function provided by Multer to configure how and where f
     - remove password and refresh token field from respone
     - check for user creation
     - return res
+
+
+- setup multer middleware in user.routes using upload.field
+
+- check validation for field not empty
+[name, email, fullName, password].some((field) => field?.trim() === "")             //it will return true or false
+some method use for condition and iterate over field
+
+- email or username is already exist or not validation checking
+- checking files are uploaded or not 
+    user.routes use upload.field middleware so give req.files option
+- upload filed in cloudinary
+
+- await User.create({}) upload all data to database
