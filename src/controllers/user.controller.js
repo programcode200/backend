@@ -5,15 +5,17 @@ import { uploadOnCloudinary } from "../utils/cloudnary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, fullName, password } = req.body;
+  const { name, email, fullName, password, username } = req.body;
 
   if (
-    [name, email, fullName, password].some((field) => field?.trim() === "") //it will return true or false
+    [name, email, fullName, password, username].some(
+      (field) => field?.trim() === ""
+    ) //it will return true or false
   ) {
     throw new ApiError(400, "Field should not be empty");
   }
 
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
   if (existedUser) {
@@ -22,17 +24,31 @@ const registerUser = asyncHandler(async (req, res) => {
   console.log("userexisted", existedUser);
 
   const avatarLocalPath = req.files?.avatar[0]?.path; //files option get by multer, avatar name come from user.routes middleware
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
   console.log("files", req.files);
+  console.log("avatarLocalPath", avatarLocalPath);
 
   //check that avatar img is upload or not
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is Required");
   }
 
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length >= 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path;
+  }
+
+  console.log(uploadOnCloudinary);
+
   //upload files on cloudinary, use await because take a time to upload img on cloudinary
   const avatar = await uploadOnCloudinary(avatarLocalPath);
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
+  console.log("avatar res obj ", avatar);
 
   if (!avatar) {
     throw new ApiError(400, "Avatar not upload");
@@ -40,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const user = await User.create({
     username: username.toLowerCase(),
-    avatar: avatar.url,
+    avatar: avatar?.url,
     coverImage: coverImage?.url || "",
     email,
     password,
@@ -50,7 +66,7 @@ const registerUser = asyncHandler(async (req, res) => {
   console.log(user);
 
   //select field that you want to select, we write field that that you dont want to select because by default all are selected.
-  const createdUser = await user.findById(user._id).select(
+  const createdUser = await User.findById(user._id).select(
     "-password -refreshToken" // use -neg to not select
   );
 
@@ -63,4 +79,16 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, "user registed."));
 });
 
-export { registerUser };
+
+const loginUser = asyncHandler(async (req, res) => {
+  const { username, email, password } = req.body;
+
+  if (!username || !email) {
+    throw new ApiError(400, "Username or email required");
+  }
+
+  
+
+});
+
+export { registerUser, loginUser };

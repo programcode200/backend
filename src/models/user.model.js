@@ -19,7 +19,7 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    fullnName: {
+    fullName: {
       type: String,
       required: true,
       trim: true,
@@ -59,6 +59,7 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 10); //two para where, hash round
   next();
 });
+
 
 //custome methods
 //compare or check password

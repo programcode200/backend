@@ -372,6 +372,7 @@ multer.diskStorage is a function provided by Multer to configure how and where f
     - check for user creation
     - return res
 
+- in a typical project, you should initialize the app only once—there should only be one instance of the Express app object across the whole application. If you initialize the app in both app.js and index.js, it could lead to problems. 
 
 - setup multer middleware in user.routes using upload.field
 
@@ -385,3 +386,20 @@ some method use for condition and iterate over field
 - upload filed in cloudinary
 
 - await User.create({}) upload all data to database
+- const createdUser = await user.findById(user._id).select          
+    select use for check that inserted data should not be get as response
+    get user that is added into database or not that check here
+
+
+# 15 
+
+# loginUser 
+
+    - req.body => get data
+    - username or email
+    - find the user
+    - password check
+    - access and refresh token
+    - send cookie
+
+
