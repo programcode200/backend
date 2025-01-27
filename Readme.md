@@ -403,3 +403,23 @@ some method use for condition and iterate over field
     - send cookie
 
 
+- get data from req.body and performe validation for required 
+
+- get data from database either by email or username using $or
+    - User means model you can use buit in fn() or methods that given by mongodb
+    - if you want to use custom methods that have created by you use user
+        - const user = await User.findOne({ })      // using this user
+
+- generate access and refresh token
+    - 
+
+- send to cookies
+    - 
+
+# logout User
+
+- using of cookie.parser you can access through req, res 
+    - eg. req.cookie 
+- create middleware of auth get req.cookie and get value from that key as accesskey then verify that key with accesskey and .env.accesskey
+- based on that key get id and find user data and send or add into req.user = user
+- then using that req.user and _id find into database and make refreshtoken as undefiend using User.findByIdAndUpdate({$set})
