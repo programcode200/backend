@@ -275,7 +275,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     {$set : {
       fullName: fullName,
       email: email,
-    },}
+    }},
     { new: true } //get updated infomation with not updated field
   ).select("-password");
 
@@ -304,8 +304,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
   }, { new: true }).select("-password")
 
   return res.status(200)
-  .json(new ApiResponse(200, user, "Avatar Image updated sucessfully"))
-
+  .json(new ApiResponse(200, user, "Cover Image upated successfully"))
 })
 
 const updateCoverImage = asyncHandler(async (req, res) => {
@@ -328,7 +327,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
   }, { new: true }).select("-password")
 
   return res.status(200)
-  .json(new ApiResponse(200, user, "Cover Image updated sucessfully"))
+  .json(new ApiResponse(200, user, "Cover Image upated successfully"))
 
 })
 
