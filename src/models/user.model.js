@@ -49,6 +49,8 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+
+
 //dont use callback fn use normal fn because we need to access the context(this), and take to encrypt so use async and await
 userSchema.pre("save", async function (next) {
   //middleware
@@ -64,6 +66,8 @@ userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password); //return boolean value
 };
 
+
+
 //for generateAccessToken
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
@@ -77,6 +81,8 @@ userSchema.methods.generateAccessToken = function () {
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
   );
 };
+
+console.log("this is user model iisssssssssssssssssssssssjd");
 
 //for generateRefreshToken
 userSchema.methods.generateRefreshToken = function () {

@@ -10,6 +10,7 @@ Cloudinary Configuration Scope As mentioned earlier, when you call cloudinary.co
 If you import cloudinary in another file (e.g., user.controller.js), the Cloudinary configuration is not automatically applied, because each file/module in Node.js is isolated, and module scope is not shared.
 */
 
+
 // Configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

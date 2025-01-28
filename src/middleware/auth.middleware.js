@@ -4,6 +4,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 
 //this middleware create different file because need in different place.
+//This middleware is used to verify the validity of the JWT (access token) in the request, ensuring that only authenticated users can access certain routes.
+
 export const verifyJWT = asyncHandler(async (req, _, next) => {
   try {
     console.log("req objecr", req);
@@ -13,7 +15,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
       req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
 
-    console.log(token);
+    console.log("the token get from cookie",token);
 
     if (!token) {
       throw new ApiError(401, "Unauthorized request");

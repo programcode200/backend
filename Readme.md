@@ -403,6 +403,15 @@ some method use for condition and iterate over field
     - send cookie
 
 
+
+# user.save() how work
+What happens when you call user.save():
+
+When you call user.save(), Mongoose looks at the user object and compares it to the current document in the database. It sees which fields have been modified (in this case, refreshToken) and sends those changes to the database.
+Mongoose knows what to save because it internally tracks the modified fields of the object. If you change a field (e.g., user.refreshToken = refreshToken), Mongoose marks that field as modified and includes it in the update when calling save().
+
+
+
 - get data from req.body and performe validation for required 
 
 - get data from database either by email or username using $or
@@ -423,3 +432,55 @@ some method use for condition and iterate over field
 - create middleware of auth get req.cookie and get value from that key as accesskey then verify that key with accesskey and .env.accesskey
 - based on that key get id and find user data and send or add into req.user = user
 - then using that req.user and _id find into database and make refreshtoken as undefiend using User.findByIdAndUpdate({$set})
+
+- create middleware for check that weather This middleware is used to verify the validity of the JWT (access token) in the request, ensuring that only authenticated users can access certain routes.
+- inside of middleware check jwt.verify() 
+- using that decoded value fetch data from database using id and pass that user to next()
+
+- from that using user that passed by auth.middleware use in login controller.
+
+    - use User.findByIdAndUpdate(
+    req.user._id, //req.user._id comes from the verifyJWT middleware, which ensures that only authenticated users can log out.
+    {
+      $set: { refreshToken: undefined },
+    },
+    {
+      new: true, //Return the modified user object after the update
+    }
+  );
+- clear the cookie
+- router.post("/logout", verifyJWT, logoutUser);
+
+# 16
+# accessrefreshToken
+
+- fetch token from req.cookie and 
+- using jwt.verify() verify token 
+- get decoded token and decoded._id fetch user data from database
+- match the req.cookie.refreshtoken and user.refreshtoken 
+- if match then generateAccessAndRefreshToken()
+- pass the cookie to user as res
+
+# 17
+# create subscription model
+
+# create controller for change password
+- get password from user
+- but you need user object to see that which user password need to change or update
+    - find user by req.user._id that have pass or get from auth.middleware
+- check the oldpassword in ispasswordcorrect if yes then
+    - set password in user.password
+
+# get currentUser
+
+return res
+    .status(200)
+    .json(200, req.user, "Current user fetched successfully");
+
+you can send user, because of you pass the req.user in auth.middleware
+
+# updateAccountdetails
+
+- get data from user req.body
+- using req.user._id change in findByIdAndUpdate($set)
+- send that user to res
