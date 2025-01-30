@@ -484,3 +484,36 @@ you can send user, because of you pass the req.user in auth.middleware
 - get data from user req.body
 - using req.user._id change in findByIdAndUpdate($set)
 - send that user to res
+
+
+# 19
+# Get user channel profile
+
+if you want any profile so you go to channel url /abc, /xyz so thats why get channel name from params.
+- get value from params
+- validate that if it is given or not
+- perform aggregation pipeline operations
+    - $match username
+    - using $lookup find the subscribers by giving foriegn field as "channel"
+    - using $lookup find the subscribedTo by giving foriegn field as "subscriber"
+        - these field add into user 
+    - using $addfield count the subscribers and subscribedTo, and add them in new field
+        - use condition operater for check that is he subscribe to  anyone or not (subscribe button)
+    - using project what field will need to add or go to channel that give 
+
+# 20
+# watch history
+
+when you want users watch history you use videos model using that model you get videos data but in video you need owner so for that futher data use again pipeline to get the users model data and add that useful data in owner field
+
+
+req.user._id it will return string not mongodb id, but in mongoose it will automatically convert into id
+_id: new mongoose.Types.ObjectId(req.user._id), //it will convert into id mongodb will not convert into id it return string
+
+- use aggregate method on User
+- $match user and find data
+- on that user use $lookup
+    - $lookup to videos and localfield is watchhistory
+        - using pipeline on that again use $lookup for owner on users field or document is owner
+        -  you go down in owner field so use again pipeline for the $project what users value you want to send to user 
+            - you get array of [0] so for frontend use $first to get only object not array
