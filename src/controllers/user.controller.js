@@ -162,6 +162,11 @@ const logoutUser = asyncHandler(async (req, res) => {
     req.user._id, //req.user._id comes from the verifyJWT middleware, which ensures that only authenticated users can log out.
     {
       $set: { refreshToken: undefined },
+
+      // $unset: {
+      //   refreshToken: 1, //this removes the field from document.
+      // },
+
     },
     {
       new: true, //Return the modified user object after the update
@@ -190,10 +195,11 @@ const accessrefreshToken = asyncHandler(async (req, res) => {
   }
 
   try {
-    const decodedToken = jwt.verify(userRefreshToken, REFRESH_TOKEN_SECRET);
+    const decodedToken = jwt.verify(userRefreshToken, process.env.REFRESH_TOKEN_SECRET);
     console.log("new decodedToken", decodedToken);
 
     const user = await User.findById(decodedToken?._id);
+    
     if (!user) {
       throw new ApiError(401, "Invalid RefreshToken");
     }
@@ -261,7 +267,7 @@ const changeNewPassword = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
-    .json(200, req.user, "Current user fetched successfully");
+    .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
@@ -343,6 +349,14 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "Cover Image upated successfully"));
 });
 
+//ref doc for sub and sub To
+// [
+//   { "_id": "sub1", "subscriber": "124", "channel": "123" },  // Rohit → Virat
+//   { "_id": "sub2", "subscriber": "125", "channel": "123" },  // Sachin → Virat
+//   { "_id": "sub3", "subscriber": "124", "channel": "126" }   // Rohit → Dhoni
+// ]
+
+
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
 
@@ -362,7 +376,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       $lookup: {
         from: "subscriptions",
         localField: "_id",
-        foreignField: "channel",
+        foreignField: "channel",      //get subscribers
         as: "subscribers",
       },
     },
@@ -370,7 +384,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       $lookup: {
         from: "subscriptions",
         localField: "_id",
-        foreignField: "subscriber",
+        foreignField: "subscriber",   //get subscribed To
         as: "subscribedTo",
       },
     },
@@ -417,13 +431,14 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, channel[0], "user channel fetched succeefully"));
 });
 
+
 const getWatchHistory = asyncHandler(async (req, res) => {
   // req.user._id it will return string not mongodb id, but in mongoose it will automatically convert into id
 
   const userHistory = await User.aggregate([
     {
       $match: {
-        _id: new mongoose.Types.ObjectId(req.user._id), //it will convert into id mongodb will not convert into id it return string
+        _id: new mongoose.Types.ObjectId(req.user._id), //to convert it into a valid MongoDB ObjectId. it will convert into mongodb id will not convert into id it return string
       },
     },
     {
@@ -432,6 +447,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
         localField: "watchHistory",
         foreignField: "_id",
         as: "watchHistory",
+        //Nested Lookup - Get Video Owner Details
         pipeline: [
           {
             $lookup: {
@@ -467,9 +483,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, user[0].watchHistory),
-      "watch history fetched successfully"
-    );
+      new ApiResponse(200, userHistory,"watch history fetched successfully"));
 });
 
 export {

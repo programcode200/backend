@@ -517,3 +517,62 @@ _id: new mongoose.Types.ObjectId(req.user._id), //it will convert into id mongod
         - using pipeline on that again use $lookup for owner on users field or document is owner
         -  you go down in owner field so use again pipeline for the $project what users value you want to send to user 
             - you get array of [0] so for frontend use $first to get only object not array
+
+
+# 22
+
+# add models
+
+{
+  "_id": "123",
+  "username": "Rohit",
+  "watchHistory": [
+    {
+      "_id": "vid1",
+      "title": "Cricket Highlights",
+      "owner": {
+        "_id": "124",
+        "username": "Virat",
+        "fullName": "Virat Kohli",
+        "avatar": "virat-avatar.jpg"
+      }
+    },
+    {
+      "_id": "vid2",
+      "title": "Football Match",
+      "owner": {
+        "_id": "125",
+        "username": "Dhoni",
+        "fullName": "MS Dhoni",
+        "avatar": "dhoni-avatar.jpg"
+      }
+    }
+  ]
+}
+
+
+
+# id and string
+
+// Suppose we have two different instances of ObjectId with the same value
+const objectId1 = new mongoose.Types.ObjectId("605b4b4d40d1f2283c7e82d9");
+const objectId2 = new mongoose.Types.ObjectId("605b4b4d40d1f2283c7e82d9");
+
+// If we try to compare them directly (without converting to string), it will return false:
+// Because JavaScript compares the "reference" to the ObjectId, not the actual value.
+console.log(objectId1 === objectId2); // false (different instances, even though the value is the same)
+
+// Now let's convert both ObjectIds to strings using .toString()
+// This converts the ObjectId to its string representation (a 24-character hexadecimal string)
+console.log(objectId1.toString() === objectId2.toString()); // true (same value as strings)
+
+// Now, in your logic when comparing two ObjectId fields, we want to make sure we are comparing their actual values, not their references.
+if (comment?.owner.toString() !== req.user?._id.toString()) {
+    throw new ApiError(400, "only comment owner can edit their comment");
+}
+// In the above case:
+// - comment.owner is an ObjectId (MongoDB field)
+// - req.user._id is also an ObjectId (from the logged-in user)
+// We convert both of them to strings using .toString() to ensure we're comparing the **values** of the ObjectId fields.
+
+
