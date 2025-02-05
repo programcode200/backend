@@ -575,4 +575,37 @@ if (comment?.owner.toString() !== req.user?._id.toString()) {
 // - req.user._id is also an ObjectId (from the logged-in user)
 // We convert both of them to strings using .toString() to ensure we're comparing the **values** of the ObjectId fields.
 
+# pagination
 
+- mongooseAggregatePaginate Plugin
+mongooseAggregatePaginate is a plugin that adds pagination functionality to your Mongoose aggregation queries. This allows you to fetch data in pages instead of loading all the results at once, which is especially useful when you have a lot of data.
+
+Pagination helps in fetching large datasets in smaller chunks (pages) for better performance and user experience.
+
+(page:10, limit:10) means get 10 pages from each page contain 10 docs or comments
+limit → Defines how many comments (documents) should be displayed on one page.
+page → Defines which set of comments (batch) to retrieve based on the limit.
+
+
+
+# like controller functionality
+
+- toggle like on video
+    - validate videoid using isValidObjectId
+    - find like from db using videoid and likeby user 
+    - check that is already like that video or not
+        - if yes then write code for delete that like from model because when user want to dislike that fn is run
+    - create like model using video id and user id
+    - send res to frontend
+
+- toggle like on comment
+    - same for the comment too just find likes data by using commentId
+
+- toggle like on tweet
+    - same for the comment too just find likes data by using tweetId
+
+- get all liked videos
+    - find all video or comments that likeby use using $match : user.id
+    - using $lookup find data of video from video models
+    - from videos model get owner details of that video from user model
+    - project the fields that you want
