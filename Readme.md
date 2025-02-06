@@ -609,3 +609,81 @@ page → Defines which set of comments (batch) to retrieve based on the limit.
     - using $lookup find data of video from video models
     - from videos model get owner details of that video from user model
     - project the fields that you want
+
+
+# subscription controller functionality
+
+- toggle subscription
+    - first validate channel id
+    - first match channel using channelId
+    - on that channels apply $lookup to fetch details of users from users model
+        - using the subscriptions model use $loopkup to fetch the subscribers of subscribers using channel and user_id
+        - $addfield and check that channel owner is subscribe to channel of subscribers or not using $cond
+        - $size of subscribersOfScubscriber
+        - unwind the first lookup
+
+
+
+# Subscriber controller subscribersOfsubscriber 
+
+{
+        $lookup: {
+            from: "subscriptions",
+            localField: "_id",
+            foreignField: "channel",
+            as: "subscribedToSubscriber",
+        },
+ },
+
+Breakdown of the Second Lookup:
+The second $lookup is applied inside the user lookup pipeline, so it works on each subscriber.
+It tries to find who has subscribed to them (i.e., checking who follows the subscriber).
+It matches localField: _id (User ID) with foreignField: channel (channel in subscriptions).
+If the subscriber has other users subscribed to them, those subscriptions will appear.
+If the subscriber has no subscribers, it will return an empty array.
+
+
+[
+  {
+    "subscriber": {
+      "_id": "1",
+      "username": "user1",
+      "subscribedToSubscriber": [
+        { "subscriber": "X", "channel": "1" },
+        { "subscriber": "Y", "channel": "1" }
+      ]
+    }
+  },
+  {
+    "subscriber": {
+      "_id": "2",
+      "username": "user2",
+      "subscribedToSubscriber": [
+        { "subscriber": "Z", "channel": "2" }
+      ]
+    }
+  },
+  {
+    "subscriber": {
+      "_id": "3",
+      "username": "user3",
+      "subscribedToSubscriber": []
+    }
+  }
+]
+
+
+# // controller to return channel list to which user has subscribed
+
+{
+    $addFields: {
+        latestVideo: { $last: "$subscribedChannel.videos" }
+    }
+}
+
+
+Why Does It Not Add Data as an Array?
+In this case, the reason the result of the $addFields stage doesn’t add the data in an array format is due to how the $last operator works:
+
+$last retrieves the last element in an array, not an array of elements.
+This means that $last: "$subscribedChannel.videos" will return just the last video object from the videos array of each channel, not an array of videos.
