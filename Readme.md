@@ -687,3 +687,13 @@ In this case, the reason the result of the $addFields stage doesn’t add the da
 
 $last retrieves the last element in an array, not an array of elements.
 This means that $last: "$subscribedChannel.videos" will return just the last video object from the videos array of each channel, not an array of videos.
+
+
+# info for Array and Object
+
+$lookup always returns an array.
+$unwind removes the array structure.
+$group creates arrays when using $push or $addToSet.
+$project doesn’t change array structure but can check its type.
+
+{ $addFields: { isArray: { $eq: [{ $type: "$fieldName" }, "array"] } } }
