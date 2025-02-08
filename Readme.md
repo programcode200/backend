@@ -697,3 +697,80 @@ $group creates arrays when using $push or $addToSet.
 $project doesn’t change array structure but can check its type.
 
 { $addFields: { isArray: { $eq: [{ $type: "$fieldName" }, "array"] } } }
+
+
+# tweet controller
+
+- createTweet
+  - take content from user req.body, validate content
+  - create it in Database
+
+- get user tweets
+  - take userid from params, validate it
+  - aggregate on Tweet and $match the owner of tweet and userid
+  - as per document add users data in ownerdetails using $lookup
+  - find the likes on tweet using Like model and $lookup and get the likes
+  - use $addfield to count the likes and check that user is like on tweet or not using $cond and return true or false
+  - use $project and select useful field and send
+
+- update tweet
+  - using content and tweetid
+  - validate both and find tweetid in db
+    - if get then check owner or tweet and tweet id match or not
+  - update the tweet
+
+- same for delete just delete using tweetid and check that owner and user should match id
+
+# dashboard controller
+
+- Get all the videos uploaded by the channel
+  - $dateToParts:
+$dateToParts takes a date field and breaks it down into parts like year, month, day, hour, minute, second, and millisecond.
+This operator decomposes a date field ("$createdAt") into its components (year, month, day, hour, etc.).
+
+eg.
+"createdAt": ISODate("2024-02-07T14:30:15.123Z")
+"createdAt": {
+        "year": 2024,
+        "month": 2,
+        "day": 7,
+        "hour": 14,
+        "minute": 30,
+        "second": 15,
+        "millisecond": 123
+    }
+
+
+- Get the channel stats like total video views, total subscribers, total videos, total likes etc.
+
+
+# why use _id in group
+
+_id: null groups everything into one result.
+What Does _id: null Mean in $group Stage?
+When using MongoDB aggregation, the $group stage is responsible for grouping documents based on a field.
+
+If _id is set to a field, MongoDB will group by that field.
+If _id is set to null, it means all documents are grouped into a single document.
+
+# why use
+
+$sum: 1
+ $sum: 1 → Counts Documents
+✅ This is the most common usage.
+✅ Adds 1 for each document, acting as a counter.
+
+# how grouping work in dashboard
+Step-by-Step Execution of $group
+Summing totalLikes:
+10 + 20 + 30 = 60
+Summing totalViews:
+100 + 200 + 300 = 600
+Counting Videos (totalVideos)
+$sum: 1 means counting the documents
+3 videos exist, so totalVideos = 3
+
+
+# It depends on where $group is placed. after $group apply on which documents
+If $group comes immediately after $match, it works on filtered data from $match.
+If $group comes after $project, it works on the projected (transformed) data.
