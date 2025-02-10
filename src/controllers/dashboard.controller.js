@@ -27,6 +27,8 @@ const getChannelStats = asyncHandler(async (req, res) => {
     },
   ]);
 
+  console.log("totalSubscribers", totalSubscribers);
+  
   await Video.aggregate([
     {
       $match: {

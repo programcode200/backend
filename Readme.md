@@ -774,3 +774,26 @@ $sum: 1 means counting the documents
 # It depends on where $group is placed. after $group apply on which documents
 If $group comes immediately after $match, it works on filtered data from $match.
 If $group comes after $project, it works on the projected (transformed) data.
+
+# playlist Controller
+
+# What is Promise.all()?
+Promise.all() is a JavaScript method that runs multiple asynchronous operations in parallel and waits for all of them to complete.
+
+# $addToSet: Adds a Unique Value to an Array
+Ensures that a value is added only if it doesn't already exist in the array.
+Prevents duplicate entries in an array field.
+If the value is already present, nothing happens.
+
+# $set: Replaces or Updates a Field
+Used to update or replace the entire value of a field.
+Does not check for duplicates (overwrites the existing value).
+
+# When to Use $pull?
+When you want to remove a specific value from an array.
+Keeps the other videos intact.
+
+#  When to Use $unset?
+When you want to delete the entire videos field (not just one video).
+
+# video Controller
