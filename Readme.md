@@ -1,9 +1,7 @@
-# BACK-END 
+# BACK-END
 
-- tools
-      - moon modeler and eraser.io  :-
-            Use for structure the data for database field and data types
-      
+- tools - moon modeler and eraser.io :-
+  Use for structure the data for database field and data types
 
 HOW DATA SHOULD MODEL:-
 
@@ -11,33 +9,35 @@ these lines need for creating models
 
 import mongoose from "mongoose"
 const userSchema = new mongoose.Schema({
-        {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true
-    },
-    password: {
-      type: String,
-      required: true,
+{
+username: {
+type: String,
+required: true,
+unique: true,
+lowercase: true
+},
+email: {
+type: String,
+required: true,
+unique: true,
+lowercase: true
+},
+password: {
+type: String,
+required: true,
 
     }
-  },
-  {timestamps: true}
+
+},
+{timestamps: true}
 })
 export const User = mongoose.model("User", userSchema)
 
 # backend with JavaScript
 
 # connect database
-    - create mongodb account 
+
+    - create mongodb account
     - create database network and database access
     - configure ip address 0.0.0.0/0
     - database deployment
@@ -45,11 +45,9 @@ export const User = mongoose.model("User", userSchema)
         - compass
         - copy string and replace <password/>
 
-In constants create the database name like:- export const DB_NAME = "youtubevideo"  
+In constants create the database name like:- export const DB_NAME = "youtubevideo"
 
-Database connection have 2 types:
-    - write fn inside of index.js
-    - write code inside db folder file and import inside the index.js
+Database connection have 2 types: - write fn inside of index.js - write code inside db folder file and import inside the index.js
 
 All ways remember database is always in another contienet.
 so when you talk with db take time, so always use (async and await) and (try and catch).
@@ -86,37 +84,37 @@ A document is the individual data record, stored in JSON-like format (BSON in Mo
 A document is similar to a row in a relational database.
 Documents are stored inside collections.
 
-
 Hierarchy Example:
 Project: MyProject
 
 Cluster: Cluster0
 Database: ecommerceDB
 Collection: products
-Document: {"_id": 1, "name": "Laptop", "price": 1000}
+Document: {"\_id": 1, "name": "Laptop", "price": 1000}
 Collection: users
-Document: {"_id": 101, "name": "John Doe", "email": "johndoe@example.com"}
+Document: {"\_id": 101, "name": "John Doe", "email": "johndoe@example.com"}
 
+# dotenv
 
-# dotenv 
-require('dotenv').config()          give path here ====>  // require('dotenv').config({path: './env'})
+require('dotenv').config() give path here ====> // require('dotenv').config({path: './env'})
 
 as early as possible in your application, import and configure dotenv.
 use for when run code then as soon as possible need to load .env variable in main file or accessable all over application.
 
 ------------------------- morden way ------------------------
-    import dotenv from "dotenv"
-    dotenv.config({
-        path: './env'
-    })
+import dotenv from "dotenv"
+dotenv.config({
+path: './env'
+})
 
 expirenmental feature
 make changes inside of package.json
-    "scripts": {
-        "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
-    },
+"scripts": {
+"dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+},
 
 # Express Req
+
     app.use() :- middleware and configuration settings
 
 # middleware
@@ -126,9 +124,10 @@ checking the condition that user is pass or not if yes then give res.
 
 must use next() when writing middleware fn
 
-# credintials 
+# credintials
+
 app.use(cors({
-    credentials: true,
+credentials: true,
 }))
 
 CORS Credentials
@@ -142,10 +141,9 @@ The body refers to the data sent by the client in the request body. It can be in
 When to Use?
 When the client sends JSON data in a POST or PUT request.
 
-app.use(express.json()); 
+app.use(express.json());
 
-
-# app.use(express.json()); 
+# app.use(express.json());
 
 app.use(express.json()) is a middleware function in Express.js that parses incoming JSON request payloads and makes them available in req.body. Without this middleware, the req.body property will remain undefined for JSON payloads.
 
@@ -155,47 +153,49 @@ Parses JSON Request Bodies: It reads the incoming request body if the Content-Ty
 Handles Only JSON Data: If the request body is not JSON, it doesn't process it (other middleware like express.urlencoded() is needed for other data formats).
 
 # urlencoded
+
 urlencoded in Express.js
 The urlencoded format is used for handling HTML form data submitted via application/x-www-form-urlencoded. It converts the data into a JavaScript object.
 
 When to Use?
 When handling data from forms (e.g., name=value pairs).
 
-# multer 
+# multer
+
 multer in Express.js
 multer is middleware used for handling file uploads. It saves files to a specified folder and provides metadata about the uploaded files.
 
 When to Use?
 When the client uploads files (e.g., images, PDFs).
 
-# moduls 
+# moduls
 
-it use like 
-module.exports = function_name      //it like default exports
-module.exports = {function_name, function_name}    //2nd way
+it use like
+module.exports = function_name //it like default exports
+module.exports = {function_name, function_name} //2nd way
 
 # server created using node.js
 
 let http =require("http")
 
 let server = http.createServer((req, res) =>{
-    if(req.url == "/"){
-        res.end("this is Home");
-    }
+if(req.url == "/"){
+res.end("this is Home");
+}
 })
 
 server.listen(8000, ()=>{
-    console.log("server listening on");
+console.log("server listening on");
 })
 
-cmd> node index.js          //for start server
+cmd> node index.js //for start server
 
 In node.js
 res.end() only take string or buffer
 The issue with your code is that you are trying to send the JavaScript object obj directly as the response using res.end(obj). However, res.end() only accepts a string or a Buffer, and JavaScript objects need to be converted to a string format, such as JSON, before they can be sent in the response.
 
-
 # res.send()
+
 But in Express
 
 In Express.js, the res.send() method is used to send a response to the client. You can use res.send() to send various types of data, including:
@@ -205,9 +205,10 @@ Objects (which will be automatically converted to JSON)
 Buffers (binary data, such as images or files)
 
 # only take one arg
-res.send("about details", currentid);           //wrong
-res.send("about details"+currentid);           //correct
-res.send(`about details ${currentid}`);        //correct
+
+res.send("about details", currentid); //wrong
+res.send("about details"+currentid); //correct
+res.send(`about details ${currentid}`); //correct
 
 res.send() only accepts a single argument:
 
@@ -216,9 +217,9 @@ The second argument (currentid) is ignored, causing unintended behavior.
 
 # Middleware Usage:
 
-express.json(): Parses JSON bodies.                                             //for access req.body
-express.urlencoded(): Parses URL-encoded bodies (e.g., from forms).             //for access req.query
-express.text(): Parses raw text bodies (when Content-Type: text/plain).         //for access req.body
+express.json(): Parses JSON bodies. //for access req.body
+express.urlencoded(): Parses URL-encoded bodies (e.g., from forms). //for access req.query
+express.text(): Parses raw text bodies (when Content-Type: text/plain). //for access req.body
 Accessing Data:
 
 req.body: Contains the parsed data from the body (JSON, form data, or plain text).
@@ -229,18 +230,19 @@ res.send() sends back an object containing the parsed data.
 
 # setup mongodb connection with express
 
-const client = new MongoClient(dbConnectionUrl);        //for create new client from mongoclient
+const client = new MongoClient(dbConnectionUrl); //for create new client from mongoclient
 
-await client.connect();                                 //connect new client with db
-let database = client.db("Mymongo");                    //set dbName using that client
+await client.connect(); //connect new client with db
+let database = client.db("Mymongo"); //set dbName using that client
 
-let myDB = await dBConnection();                        //this use when call that db into another file
-let stdCollection = myDB.collection("students");        //create the collection using that db     
+let myDB = await dBConnection(); //this use when call that db into another file
+let stdCollection = myDB.collection("students"); //create the collection using that db
 
 # get data from mongodb localhost
-# What is a Cursor in MongoDB?
-A cursor in MongoDB is a pointer to the result set of a query. When you perform a query using methods like find(), MongoDB doesn’t immediately load all the data into memory. Instead, it returns a cursor, which you can use to retrieve the data incrementally.
 
+# What is a Cursor in MongoDB?
+
+A cursor in MongoDB is a pointer to the result set of a query. When you perform a query using methods like find(), MongoDB doesn’t immediately load all the data into memory. Instead, it returns a cursor, which you can use to retrieve the data incrementally.
 
 Efficient for large datasets: Cursors allow you to work with the data in smaller chunks instead of loading everything into memory at once.
 
@@ -251,10 +253,12 @@ toArray(): Converts the cursor to an array of documents.
 forEach(): Iterates through each document in the cursor.
 
 # Example of a Cursor:
+
 const cursor = collection.find({}); // Returns a cursor, not the actual data
 Here, cursor contains a pointer to the data that matches the query {} (in this case, all documents).
 
 # How to Work with a Cursor
+
 Option 1: Convert the Cursor to an Array
 
 const data = await collection.find({}).toArray();
@@ -264,7 +268,7 @@ Option 2: Process Documents Incrementally
 
 const cursor = collection.find({});
 await cursor.forEach(doc => {
-  console.log(doc); // Process each document one by one
+console.log(doc); // Process each document one by one
 });
 
 # let data = await stdCollection.find({}).toArray(); because:
@@ -284,17 +288,17 @@ name (the student's name)
 
 # objectId
 
-let delRes = await stdCollection.deleteOne({ _id: ObjectId(id) });  // This won't work because ObjectId is a class and needs `new` to instantiate.
+let delRes = await stdCollection.deleteOne({ \_id: ObjectId(id) }); // This won't work because ObjectId is a class and needs `new` to instantiate.
 
 Why is new used with ObjectId?
-MongoDB uses ObjectId as the default type for document identifiers (_id). When you retrieve documents from MongoDB, the _id field is usually an ObjectId, not a regular string. Therefore, when you receive an id in a string format (like from a URL parameter), you need to convert it into a valid ObjectId before using it in MongoDB queries.
+MongoDB uses ObjectId as the default type for document identifiers (\_id). When you retrieve documents from MongoDB, the \_id field is usually an ObjectId, not a regular string. Therefore, when you receive an id in a string format (like from a URL parameter), you need to convert it into a valid ObjectId before using it in MongoDB queries.
 
-MongoDB _id is an ObjectId:-
-MongoDB generates ObjectId values as the default value for the _id field, which is a 12-byte identifier used to uniquely identify documents.
-Example: _id: ObjectId("605c72ef1532071b17d3f0c").
+MongoDB \_id is an ObjectId:-
+MongoDB generates ObjectId values as the default value for the \_id field, which is a 12-byte identifier used to uniquely identify documents.
+Example: \_id: ObjectId("605c72ef1532071b17d3f0c").
 
+# use of new keyword in let enquiry = new enquiryModel
 
-# use of new keyword in   let enquiry = new enquiryModel
 Creating an Object with new:
 
 new enquiryModel({ ... }) creates a structured object using the enquiryModel (which is likely a schema or blueprint defined using something like Mongoose for MongoDB).
@@ -319,12 +323,11 @@ Can validate the data (e.g., check if the email is valid).
 Can save itself to a database or perform other operations defined in the enquiryModel.
 These abilities come from the enquiryModel schema or class.
 
-# without new 
+# without new
 
 If you were able to add data to the database without using the new keyword and didn’t encounter any errors, it's likely because your library or framework (e.g., Mongoose in Node.js) has some flexibility built into how it handles objects. Let me explain why this works but why using new is still important.
 
-
-#### PHASE TWO ####
+#### PHASE TWO
 
 mongoose pre hook
 when saving data just before that run that hook for encrypt
@@ -336,8 +339,8 @@ userSchema.methods
 
 access token dont store in db but refresh will store
 
-
 # jwt
+
 JWT (JSON Web Token) can be used as a Bearer Token in the context of authorization.
 who have token data will send
 
@@ -346,20 +349,21 @@ who have token data will send
 unlink(path) :- when file delete file become unlink.
 
 # multer
+
 This code configures and exports a file-upload handler using the Multer library in Node.js. Multer is middleware for handling multipart/form-data, which is primarily used for uploading files.
 
 multer.diskStorage is a function provided by Multer to configure how and where files should be stored on your disk.
 
-
 # 12
+
 # router and controller with debugging
 
     - create route for user
     - create controller for register user
     - get userRoutes in app.js
 
+# 13
 
-# 13 
 # register controller
 
     - get user details from frontend
@@ -372,28 +376,27 @@ multer.diskStorage is a function provided by Multer to configure how and where f
     - check for user creation
     - return res
 
-- in a typical project, you should initialize the app only once—there should only be one instance of the Express app object across the whole application. If you initialize the app in both app.js and index.js, it could lead to problems. 
+- in a typical project, you should initialize the app only once—there should only be one instance of the Express app object across the whole application. If you initialize the app in both app.js and index.js, it could lead to problems.
 
 - setup multer middleware in user.routes using upload.field
 
 - check validation for field not empty
-[name, email, fullName, password].some((field) => field?.trim() === "")             //it will return true or false
-some method use for condition and iterate over field
+  [name, email, fullName, password].some((field) => field?.trim() === "") //it will return true or false
+  some method use for condition and iterate over field
 
 - email or username is already exist or not validation checking
-- checking files are uploaded or not 
-    user.routes use upload.field middleware so give req.files option
+- checking files are uploaded or not
+  user.routes use upload.field middleware so give req.files option
 - upload filed in cloudinary
 
 - await User.create({}) upload all data to database
-- const createdUser = await user.findById(user._id).select          
-    select use for check that inserted data should not be get as response
-    get user that is added into database or not that check here
+- const createdUser = await user.findById(user.\_id).select  
+   select use for check that inserted data should not be get as response
+  get user that is added into database or not that check here
 
+# 15
 
-# 15 
-
-# loginUser 
+# loginUser
 
     - req.body => get data
     - username or email
@@ -402,155 +405,156 @@ some method use for condition and iterate over field
     - access and refresh token
     - send cookie
 
-
-
 # user.save() how work
+
 What happens when you call user.save():
 
 When you call user.save(), Mongoose looks at the user object and compares it to the current document in the database. It sees which fields have been modified (in this case, refreshToken) and sends those changes to the database.
 Mongoose knows what to save because it internally tracks the modified fields of the object. If you change a field (e.g., user.refreshToken = refreshToken), Mongoose marks that field as modified and includes it in the update when calling save().
 
-
-
-- get data from req.body and performe validation for required 
+- get data from req.body and performe validation for required
 
 - get data from database either by email or username using $or
-    - User means model you can use buit in fn() or methods that given by mongodb
-    - if you want to use custom methods that have created by you use user
-        - const user = await User.findOne({ })      // using this user
+
+  - User means model you can use buit in fn() or methods that given by mongodb
+  - if you want to use custom methods that have created by you use user
+    - const user = await User.findOne({ }) // using this user
 
 - generate access and refresh token
-    - 
+
+  -
 
 - send to cookies
-    - 
+  -
 
 # logout User
 
-- using of cookie.parser you can access through req, res 
-    - eg. req.cookie 
+- using of cookie.parser you can access through req, res
+  - eg. req.cookie
 - create middleware of auth get req.cookie and get value from that key as accesskey then verify that key with accesskey and .env.accesskey
 - based on that key get id and find user data and send or add into req.user = user
-- then using that req.user and _id find into database and make refreshtoken as undefiend using User.findByIdAndUpdate({$set})
+- then using that req.user and \_id find into database and make refreshtoken as undefiend using User.findByIdAndUpdate({$set})
 
 - create middleware for check that weather This middleware is used to verify the validity of the JWT (access token) in the request, ensuring that only authenticated users can access certain routes.
-- inside of middleware check jwt.verify() 
+- inside of middleware check jwt.verify()
 - using that decoded value fetch data from database using id and pass that user to next()
 
 - from that using user that passed by auth.middleware use in login controller.
 
-    - use User.findByIdAndUpdate(
-    req.user._id, //req.user._id comes from the verifyJWT middleware, which ensures that only authenticated users can log out.
+  - use User.findByIdAndUpdate(
+    req.user.\_id, //req.user.\_id comes from the verifyJWT middleware, which ensures that only authenticated users can log out.
     {
-      $set: { refreshToken: undefined },
+    $set: { refreshToken: undefined },
     },
     {
-      new: true, //Return the modified user object after the update
+    new: true, //Return the modified user object after the update
     }
-  );
+    );
+
 - clear the cookie
 - router.post("/logout", verifyJWT, logoutUser);
 
 # 16
+
 # accessrefreshToken
 
-- fetch token from req.cookie and 
-- using jwt.verify() verify token 
-- get decoded token and decoded._id fetch user data from database
-- match the req.cookie.refreshtoken and user.refreshtoken 
+- fetch token from req.cookie and
+- using jwt.verify() verify token
+- get decoded token and decoded.\_id fetch user data from database
+- match the req.cookie.refreshtoken and user.refreshtoken
 - if match then generateAccessAndRefreshToken()
 - pass the cookie to user as res
 
 # 17
+
 # create subscription model
 
 # create controller for change password
+
 - get password from user
 - but you need user object to see that which user password need to change or update
-    - find user by req.user._id that have pass or get from auth.middleware
+  - find user by req.user.\_id that have pass or get from auth.middleware
 - check the oldpassword in ispasswordcorrect if yes then
-    - set password in user.password
+  - set password in user.password
 
 # get currentUser
 
 return res
-    .status(200)
-    .json(200, req.user, "Current user fetched successfully");
+.status(200)
+.json(200, req.user, "Current user fetched successfully");
 
 you can send user, because of you pass the req.user in auth.middleware
 
 # updateAccountdetails
 
 - get data from user req.body
-- using req.user._id change in findByIdAndUpdate($set)
+- using req.user.\_id change in findByIdAndUpdate($set)
 - send that user to res
 
-
 # 19
+
 # Get user channel profile
 
 if you want any profile so you go to channel url /abc, /xyz so thats why get channel name from params.
+
 - get value from params
 - validate that if it is given or not
 - perform aggregation pipeline operations
-    - $match username
-    - using $lookup find the subscribers by giving foriegn field as "channel"
-    - using $lookup find the subscribedTo by giving foriegn field as "subscriber"
-        - these field add into user 
-    - using $addfield count the subscribers and subscribedTo, and add them in new field
-        - use condition operater for check that is he subscribe to  anyone or not (subscribe button)
-    - using project what field will need to add or go to channel that give 
+  - $match username
+  - using $lookup find the subscribers by giving foriegn field as "channel"
+  - using $lookup find the subscribedTo by giving foriegn field as "subscriber"
+    - these field add into user
+  - using $addfield count the subscribers and subscribedTo, and add them in new field
+    - use condition operater for check that is he subscribe to anyone or not (subscribe button)
+  - using project what field will need to add or go to channel that give
 
 # 20
+
 # watch history
 
 when you want users watch history you use videos model using that model you get videos data but in video you need owner so for that futher data use again pipeline to get the users model data and add that useful data in owner field
 
-
-req.user._id it will return string not mongodb id, but in mongoose it will automatically convert into id
-_id: new mongoose.Types.ObjectId(req.user._id), //it will convert into id mongodb will not convert into id it return string
+req.user.\_id it will return string not mongodb id, but in mongoose it will automatically convert into id
+\_id: new mongoose.Types.ObjectId(req.user.\_id), //it will convert into id mongodb will not convert into id it return string
 
 - use aggregate method on User
 - $match user and find data
 - on that user use $lookup
-    - $lookup to videos and localfield is watchhistory
-        - using pipeline on that again use $lookup for owner on users field or document is owner
-        -  you go down in owner field so use again pipeline for the $project what users value you want to send to user 
-            - you get array of [0] so for frontend use $first to get only object not array
-
+  - $lookup to videos and localfield is watchhistory
+    - using pipeline on that again use $lookup for owner on users field or document is owner
+    - you go down in owner field so use again pipeline for the $project what users value you want to send to user
+      - you get array of [0] so for frontend use $first to get only object not array
 
 # 22
 
 # add models
 
 {
-  "_id": "123",
-  "username": "Rohit",
-  "watchHistory": [
-    {
-      "_id": "vid1",
-      "title": "Cricket Highlights",
-      "owner": {
-        "_id": "124",
-        "username": "Virat",
-        "fullName": "Virat Kohli",
-        "avatar": "virat-avatar.jpg"
-      }
-    },
-    {
-      "_id": "vid2",
-      "title": "Football Match",
-      "owner": {
-        "_id": "125",
-        "username": "Dhoni",
-        "fullName": "MS Dhoni",
-        "avatar": "dhoni-avatar.jpg"
-      }
-    }
-  ]
+"\_id": "123",
+"username": "Rohit",
+"watchHistory": [
+{
+"_id": "vid1",
+"title": "Cricket Highlights",
+"owner": {
+"_id": "124",
+"username": "Virat",
+"fullName": "Virat Kohli",
+"avatar": "virat-avatar.jpg"
 }
-
-
+},
+{
+"_id": "vid2",
+"title": "Football Match",
+"owner": {
+"_id": "125",
+"username": "Dhoni",
+"fullName": "MS Dhoni",
+"avatar": "dhoni-avatar.jpg"
+}
+}
+]
+}
 
 # id and string
 
@@ -567,18 +571,18 @@ console.log(objectId1 === objectId2); // false (different instances, even though
 console.log(objectId1.toString() === objectId2.toString()); // true (same value as strings)
 
 // Now, in your logic when comparing two ObjectId fields, we want to make sure we are comparing their actual values, not their references.
-if (comment?.owner.toString() !== req.user?._id.toString()) {
-    throw new ApiError(400, "only comment owner can edit their comment");
+if (comment?.owner.toString() !== req.user?.\_id.toString()) {
+throw new ApiError(400, "only comment owner can edit their comment");
 }
 // In the above case:
 // - comment.owner is an ObjectId (MongoDB field)
-// - req.user._id is also an ObjectId (from the logged-in user)
+// - req.user.\_id is also an ObjectId (from the logged-in user)
 // We convert both of them to strings using .toString() to ensure we're comparing the **values** of the ObjectId fields.
 
 # pagination
 
 - mongooseAggregatePaginate Plugin
-mongooseAggregatePaginate is a plugin that adds pagination functionality to your Mongoose aggregation queries. This allows you to fetch data in pages instead of loading all the results at once, which is especially useful when you have a lot of data.
+  mongooseAggregatePaginate is a plugin that adds pagination functionality to your Mongoose aggregation queries. This allows you to fetch data in pages instead of loading all the results at once, which is especially useful when you have a lot of data.
 
 Pagination helps in fetching large datasets in smaller chunks (pages) for better performance and user experience.
 
@@ -586,108 +590,102 @@ Pagination helps in fetching large datasets in smaller chunks (pages) for better
 limit → Defines how many comments (documents) should be displayed on one page.
 page → Defines which set of comments (batch) to retrieve based on the limit.
 
-
-
 # like controller functionality
 
 - toggle like on video
-    - validate videoid using isValidObjectId
-    - find like from db using videoid and likeby user 
-    - check that is already like that video or not
-        - if yes then write code for delete that like from model because when user want to dislike that fn is run
-    - create like model using video id and user id
-    - send res to frontend
+
+  - validate videoid using isValidObjectId
+  - find like from db using videoid and likeby user
+  - check that is already like that video or not
+    - if yes then write code for delete that like from model because when user want to dislike that fn is run
+  - create like model using video id and user id
+  - send res to frontend
 
 - toggle like on comment
-    - same for the comment too just find likes data by using commentId
+
+  - same for the comment too just find likes data by using commentId
 
 - toggle like on tweet
-    - same for the comment too just find likes data by using tweetId
+
+  - same for the comment too just find likes data by using tweetId
 
 - get all liked videos
-    - find all video or comments that likeby use using $match : user.id
-    - using $lookup find data of video from video models
-    - from videos model get owner details of that video from user model
-    - project the fields that you want
-
+  - find all video or comments that likeby use using $match : user.id
+  - using $lookup find data of video from video models
+  - from videos model get owner details of that video from user model
+  - project the fields that you want
 
 # subscription controller functionality
 
 - toggle subscription
-    - first validate channel id
-    - first match channel using channelId
-    - on that channels apply $lookup to fetch details of users from users model
-        - using the subscriptions model use $loopkup to fetch the subscribers of subscribers using channel and user_id
-        - $addfield and check that channel owner is subscribe to channel of subscribers or not using $cond
-        - $size of subscribersOfScubscriber
-        - unwind the first lookup
+  - first validate channel id
+  - first match channel using channelId
+  - on that channels apply $lookup to fetch details of users from users model
+    - using the subscriptions model use $loopkup to fetch the subscribers of subscribers using channel and user_id
+    - $addfield and check that channel owner is subscribe to channel of subscribers or not using $cond
+    - $size of subscribersOfScubscriber
+    - unwind the first lookup
 
-
-
-# Subscriber controller subscribersOfsubscriber 
+# Subscriber controller subscribersOfsubscriber
 
 {
-        $lookup: {
-            from: "subscriptions",
-            localField: "_id",
-            foreignField: "channel",
-            as: "subscribedToSubscriber",
-        },
- },
+$lookup: {
+from: "subscriptions",
+localField: "\_id",
+foreignField: "channel",
+as: "subscribedToSubscriber",
+},
+},
 
 Breakdown of the Second Lookup:
 The second $lookup is applied inside the user lookup pipeline, so it works on each subscriber.
 It tries to find who has subscribed to them (i.e., checking who follows the subscriber).
-It matches localField: _id (User ID) with foreignField: channel (channel in subscriptions).
+It matches localField: \_id (User ID) with foreignField: channel (channel in subscriptions).
 If the subscriber has other users subscribed to them, those subscriptions will appear.
 If the subscriber has no subscribers, it will return an empty array.
 
-
 [
-  {
-    "subscriber": {
-      "_id": "1",
-      "username": "user1",
-      "subscribedToSubscriber": [
-        { "subscriber": "X", "channel": "1" },
-        { "subscriber": "Y", "channel": "1" }
-      ]
-    }
-  },
-  {
-    "subscriber": {
-      "_id": "2",
-      "username": "user2",
-      "subscribedToSubscriber": [
-        { "subscriber": "Z", "channel": "2" }
-      ]
-    }
-  },
-  {
-    "subscriber": {
-      "_id": "3",
-      "username": "user3",
-      "subscribedToSubscriber": []
-    }
-  }
+{
+"subscriber": {
+"\_id": "1",
+"username": "user1",
+"subscribedToSubscriber": [
+{ "subscriber": "X", "channel": "1" },
+{ "subscriber": "Y", "channel": "1" }
 ]
-
+}
+},
+{
+"subscriber": {
+"\_id": "2",
+"username": "user2",
+"subscribedToSubscriber": [
+{ "subscriber": "Z", "channel": "2" }
+]
+}
+},
+{
+"subscriber": {
+"\_id": "3",
+"username": "user3",
+"subscribedToSubscriber": []
+}
+}
+]
 
 # // controller to return channel list to which user has subscribed
 
 {
-    $addFields: {
+$addFields: {
         latestVideo: { $last: "$subscribedChannel.videos" }
-    }
 }
-
+}
 
 Why Does It Not Add Data as an Array?
 In this case, the reason the result of the $addFields stage doesn’t add the data in an array format is due to how the $last operator works:
 
 $last retrieves the last element in an array, not an array of elements.
 This means that $last: "$subscribedChannel.videos" will return just the last video object from the videos array of each channel, not an array of videos.
-
 
 # info for Array and Object
 
@@ -698,14 +696,15 @@ $project doesn’t change array structure but can check its type.
 
 { $addFields: { isArray: { $eq: [{ $type: "$fieldName" }, "array"] } } }
 
-
 # tweet controller
 
 - createTweet
+
   - take content from user req.body, validate content
   - create it in Database
 
 - get user tweets
+
   - take userid from params, validate it
   - aggregate on Tweet and $match the owner of tweet and userid
   - as per document add users data in ownerdetails using $lookup
@@ -714,6 +713,7 @@ $project doesn’t change array structure but can check its type.
   - use $project and select useful field and send
 
 - update tweet
+
   - using content and tweetid
   - validate both and find tweetid in db
     - if get then check owner or tweet and tweet id match or not
@@ -726,41 +726,40 @@ $project doesn’t change array structure but can check its type.
 - Get all the videos uploaded by the channel
   - $dateToParts:
 $dateToParts takes a date field and breaks it down into parts like year, month, day, hour, minute, second, and millisecond.
-This operator decomposes a date field ("$createdAt") into its components (year, month, day, hour, etc.).
+    This operator decomposes a date field ("$createdAt") into its components (year, month, day, hour, etc.).
 
 eg.
 "createdAt": ISODate("2024-02-07T14:30:15.123Z")
 "createdAt": {
-        "year": 2024,
-        "month": 2,
-        "day": 7,
-        "hour": 14,
-        "minute": 30,
-        "second": 15,
-        "millisecond": 123
-    }
-
+"year": 2024,
+"month": 2,
+"day": 7,
+"hour": 14,
+"minute": 30,
+"second": 15,
+"millisecond": 123
+}
 
 - Get the channel stats like total video views, total subscribers, total videos, total likes etc.
 
+# why use \_id in group
 
-# why use _id in group
-
-_id: null groups everything into one result.
-What Does _id: null Mean in $group Stage?
+\_id: null groups everything into one result.
+What Does \_id: null Mean in $group Stage?
 When using MongoDB aggregation, the $group stage is responsible for grouping documents based on a field.
 
-If _id is set to a field, MongoDB will group by that field.
-If _id is set to null, it means all documents are grouped into a single document.
+If \_id is set to a field, MongoDB will group by that field.
+If \_id is set to null, it means all documents are grouped into a single document.
 
 # why use
 
 $sum: 1
- $sum: 1 → Counts Documents
+$sum: 1 → Counts Documents
 ✅ This is the most common usage.
 ✅ Adds 1 for each document, acting as a counter.
 
 # how grouping work in dashboard
+
 Step-by-Step Execution of $group
 Summing totalLikes:
 10 + 20 + 30 = 60
@@ -770,30 +769,69 @@ Counting Videos (totalVideos)
 $sum: 1 means counting the documents
 3 videos exist, so totalVideos = 3
 
-
 # It depends on where $group is placed. after $group apply on which documents
+
 If $group comes immediately after $match, it works on filtered data from $match.
 If $group comes after $project, it works on the projected (transformed) data.
 
 # playlist Controller
 
 # What is Promise.all()?
+
 Promise.all() is a JavaScript method that runs multiple asynchronous operations in parallel and waits for all of them to complete.
 
 # $addToSet: Adds a Unique Value to an Array
+
 Ensures that a value is added only if it doesn't already exist in the array.
 Prevents duplicate entries in an array field.
 If the value is already present, nothing happens.
 
 # $set: Replaces or Updates a Field
+
 Used to update or replace the entire value of a field.
 Does not check for duplicates (overwrites the existing value).
 
 # When to Use $pull?
+
 When you want to remove a specific value from an array.
 Keeps the other videos intact.
 
-#  When to Use $unset?
+# When to Use $unset?
+
 When you want to delete the entire videos field (not just one video).
 
+#
+
 # video Controller
+
+thumbnail: {
+url: thumbnail.url,
+public_id: thumbnail.public_id
+},
+
+What is public_id and Why is it Used?
+A public_id is a unique identifier assigned to a file (such as an image or video) when storing it in cloud storage services like Cloudinary, AWS S3, or Firebase Storage. This ID is useful for managing, retrieving, updating, and deleting files efficiently.
+
+# count, sum, size
+
+# count
+
+Use when you want to count the number of documents after filtering.
+When to use $count?
+When you only need the total number of matching documents.
+Faster than $group because it doesn’t store additional fields.
+
+# sum
+
+Use inside $group when you need to add up numbers across documents.
+
+When to use $sum?
+When you need to sum numeric values across multiple documents.
+Used inside $group to sum fields.
+
+# size
+
+use inside $project to count the number of elements in an array.
+When to use $size?
+When you need to count items inside an array.
+Used inside $project to add a new field with the count.
