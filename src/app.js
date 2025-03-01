@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+
+dotenv.config(); 
 const app = express();
 
 //use, use for middleware and configuration settings
@@ -10,6 +13,9 @@ app.use(
     credentials: true,
   })
 );
+
+
+
 console.log("Allowed CORS Origin:", process.env.CORS_ORIGIN);
 
 app.use(express.json({ limit: "16mb" }));
