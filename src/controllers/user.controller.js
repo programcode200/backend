@@ -31,8 +31,11 @@ const generateAccessAndRefreshToken = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
+  
+  console.log("Incoming Request Body:", req.body); // ✅ Debugging
+  console.log("Incoming Files:", req.files);
+  
   const { name, email, fullName, password, username } = req.body;
-
   if (
     [name, email, fullName, password, username].some(
       (field) => field?.trim() === ""
@@ -166,7 +169,6 @@ const logoutUser = asyncHandler(async (req, res) => {
       // $unset: {
       //   refreshToken: 1, //this removes the field from document.
       // },
-
     },
     {
       new: true, //Return the modified user object after the update
@@ -195,11 +197,14 @@ const accessrefreshToken = asyncHandler(async (req, res) => {
   }
 
   try {
-    const decodedToken = jwt.verify(userRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const decodedToken = jwt.verify(
+      userRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
     console.log("new decodedToken", decodedToken);
 
     const user = await User.findById(decodedToken?._id);
-    
+
     if (!user) {
       throw new ApiError(401, "Invalid RefreshToken");
     }
@@ -356,7 +361,6 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 //   { "_id": "sub3", "subscriber": "124", "channel": "126" }   // Rohit → Dhoni
 // ]
 
-
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
 
@@ -376,7 +380,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       $lookup: {
         from: "subscriptions",
         localField: "_id",
-        foreignField: "channel",      //get subscribers
+        foreignField: "channel", //get subscribers
         as: "subscribers",
       },
     },
@@ -384,7 +388,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       $lookup: {
         from: "subscriptions",
         localField: "_id",
-        foreignField: "subscriber",   //get subscribed To
+        foreignField: "subscriber", //get subscribed To
         as: "subscribedTo",
       },
     },
@@ -431,14 +435,13 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, channel[0], "user channel fetched succeefully"));
 });
 
-
 const getWatchHistory = asyncHandler(async (req, res) => {
   // req.user._id it will return string not mongodb id, but in mongoose it will automatically convert into id
 
   const userHistory = await User.aggregate([
     {
       $match: {
-        _id: new mongoose.Types.ObjectId(req.user._id), //to convert it into a valid MongoDB ObjectId. it will convert into mongodb id will not convert into id it return string
+        _id: new mongoose.Types.ObjectId(req.user?._id), //to convert it into a valid MongoDB ObjectId. it will convert into mongodb id will not convert into id it return string
       },
     },
     {
@@ -483,7 +486,12 @@ const getWatchHistory = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, userHistory,"watch history fetched successfully"));
+      new ApiResponse(
+        200,
+        userHistory[0]?.watchHistory,
+        "watch history fetched successfully"
+      )
+    );
 });
 
 export {

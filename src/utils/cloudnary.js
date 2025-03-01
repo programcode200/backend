@@ -28,7 +28,7 @@ const uploadOnCloudinary = async (localFilePath) => {
 
     //upload the file on cloudinary
     const response = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: "image",
+      resource_type: "auto",
     });
 
     //file has been uploaded successfuly
@@ -44,7 +44,7 @@ const uploadOnCloudinary = async (localFilePath) => {
 };
 
 
-const deleteOnCloudinary = async (public_id, resource_type="image") => {
+const deleteOnCloudinary = async (public_id, resource_type="auto") => {
   try {
       if (!public_id) return null;
 

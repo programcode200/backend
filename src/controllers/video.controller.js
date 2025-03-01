@@ -8,14 +8,115 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { uploadOnCloudinary, deleteOnCloudinary } from "../utils/cloudnary.js";
 
+// const getAllVideos = asyncHandler(async (req, res) => {
+//   //TODO: get all videos based on query, sort, pagination
+
+//   const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
+
+//   console.log("data come from query", query, sortBy, sortType, userId);
+//   console.log(userId);
+
+//   const pipeline = [];
+
+//   // for using Full Text based search u need to create a search index in mongoDB atlas
+//   // you can include field mapppings in search index eg.title, description, as well
+//   // Field mappings specify which fields within your documents should be indexed for text search.
+//   // this helps in seraching only in title, desc providing faster search results
+//   // here the name of search index is 'search-videos'
+
+//   if (query) {
+//     pipeline.push({
+//       $search: {
+//         index: "search-videos",
+//         text: {
+//           query: query,
+//           path: ["title", "description"], //search only on title, desc
+//           fuzzy: { maxEdits: 2 }, // Allows small spelling mistakes
+//         },
+//       },
+//     });
+//   }
+
+//   if (userId) {
+//     if (!isValidObjectId(userId)) {
+//       throw new ApiError(400, "Invalid userId");
+//     }
+
+//     pipeline.push({
+//       $match: {
+//         owner: new mongoose.Types.ObjectId(userId),
+//       },
+//     });
+//   }
+
+//   // fetch videos only that are set isPublished as true
+//   pipeline.push({ $match: { isPublished: true } });
+
+//   //sortBy can be views, createdAt, duration
+//   //sortType can be ascending(-1) or descending(1)
+//   if (sortBy && sortType) {
+//     pipeline.push({
+//       $sort: {
+//         [sortBy]: sortType === "asc" ? 1 : -1,
+//       },
+//     });
+//   } else {
+//     pipeline.push({ $sort: { createdAt: -1 } });
+//   }
+
+//   pipeline.push(
+//     {
+//       $lookup: {
+//         from: "users",
+//         localField: "owner",
+//         foreignField: "_id",
+//         as: "ownerDetails",
+//         pipeline: [
+//           {
+//             $project: {
+//               username: 1,
+//               avatar: 1,
+//             },
+//           },
+//         ],
+//       },
+//     },
+//     {
+//       $unwind: "$ownerDetails",
+      
+//     }
+//   );
+
+//   // const videoAggregate = Video.aggregate(pipeline);
+
+//   // const options = {
+//   //   page: parseInt(page, 10),
+//   //   limit: parseInt(limit, 10),
+//   // };
+
+//   // const video = await Video.aggregatePaginate(videoAggregate, options);
+
+
+//   const pageInt = parseInt(page, 10);
+//   const limitInt = parseInt(limit, 10);
+
+//   pipeline.push({ $skip: (pageInt - 1) * limitInt }, { $limit: limitInt });
+
+//   const videos = await Video.aggregate(pipeline);
+
+//   return res
+//     .status(200)
+//     .json(new ApiResponse(200, videos, "Videos fetched successfully"));
+    
+// });
+
+
+// get all videos based on query, sort, pagination
 const getAllVideos = asyncHandler(async (req, res) => {
-  //TODO: get all videos based on query, sort, pagination
-
   const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
+  console.log("Query Params:", { page, limit, query, sortBy, sortType, userId });
 
-  console.log("data come from query", query, sortBy, sortType, userId);
   console.log(userId);
-  
   const pipeline = [];
 
   // for using Full Text based search u need to create a search index in mongoDB atlas
@@ -23,30 +124,29 @@ const getAllVideos = asyncHandler(async (req, res) => {
   // Field mappings specify which fields within your documents should be indexed for text search.
   // this helps in seraching only in title, desc providing faster search results
   // here the name of search index is 'search-videos'
-
-
   if (query) {
-    pipeline.push({
-      $search: {
-        index: "search-videos",
-        text: {
-          query: query,
-          path: ["title", "description"], //search only on title, desc
-        },
-      },
-    });
+      pipeline.push({
+          $search: {
+              index: "search-videos",
+              text: {
+                  query: query,
+                  path: ["title", "description"] //search only on title, desc
+              }
+          }
+      });
   }
 
   if (userId) {
-    if (!isValidObjectId(userId)) {
-      throw new ApiError(400, "Invalid userId");
-    }
+      if (!isValidObjectId(userId)) {
+          throw new ApiError(400, "Invalid userId");
+      }
+      
 
-    pipeline.push({
-      $match: {
-        owner: new mongoose.Types.ObjectId(userId),
-      },
-    });
+      pipeline.push({
+          $match: {
+              owner: new mongoose.Types.ObjectId(userId)
+          }
+      });
   }
 
   // fetch videos only that are set isPublished as true
@@ -55,50 +155,137 @@ const getAllVideos = asyncHandler(async (req, res) => {
   //sortBy can be views, createdAt, duration
   //sortType can be ascending(-1) or descending(1)
   if (sortBy && sortType) {
-    pipeline.push({
-      $sort: {
-        [sortBy]: sortType === "asc" ? 1 : -1,
-      },
-    });
+      pipeline.push({
+          $sort: {
+              [sortBy]: sortType === "asc" ? 1 : -1
+          }
+      });
   } else {
-    pipeline.push({ $sort: { createdAt: -1 } });
+      pipeline.push({ $sort: { createdAt: -1 } });
   }
 
   pipeline.push(
-    {
-      $lookup: {
-        from: "users",
-        localField: "owner",
-        foreignField: "_id",
-        as: "ownerDetails",
-        pipeline: [
-          {
-            $project: {
-              username: 1,
-              "avatar.url": 1,
-            },
-          },
-        ],
+      {
+          $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "ownerDetails",
+              pipeline: [
+                  {
+                      $project: {
+                          username: 1,
+                          "avatar.url": 1
+                      }
+                  }
+              ]
+          }
       },
-    },
-    {
-      $unwind: "$ownerDetails",
-    }
-  );
+      {
+          $unwind: "$ownerDetails"
+      }
+  )
 
   const videoAggregate = Video.aggregate(pipeline);
 
   const options = {
-    page: parseInt(page, 10),
-    limit: parseInt(limit, 10),
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10)
   };
 
   const video = await Video.aggregatePaginate(videoAggregate, options);
 
   return res
-    .status(200)
-    .json(new ApiResponse(200, video, "Videos fetched successfully"));
+      .status(200)
+      .json(new ApiResponse(200, video, "Videos fetched successfully"));
 });
+
+
+
+
+
+// const getAllVideos = asyncHandler(async (req, res) => {
+//   const { page = 1, limit = 10, query, sortBy = "createdAt", sortType = "desc", userId } = req.query;
+
+//   console.log("Query Params:", { query, sortBy, sortType, userId });
+
+//   const pipeline = [];
+
+//   // ✅ Full-text search
+//   if (query) {
+//     pipeline.push({
+//       $search: {
+//         index: "search-videos",
+//         text: {
+//           query: query,
+//           path: ["title", "description"], // Search only in title, description
+//           fuzzy: { maxEdits: 2 }, // Allow small typos
+//         },
+//       },
+//     });
+//   }
+
+//   // ✅ Filter by userId if valid
+//   if (userId) {
+//     if (!isValidObjectId(userId)) {
+//       return res.status(400).json(new ApiError(400, "Invalid userId"));
+//     }
+
+//     pipeline.push({
+//       $match: { owner: new mongoose.Types.ObjectId(userId) },
+//     });
+//   }
+
+//   // ✅ Fetch only published videos
+//   pipeline.push({ $match: { isPublished: true } });
+
+//   // ✅ Sorting fix: Convert `sortType` correctly
+//   const sortOrder = sortType === "asc" ? 1 : -1;
+//   pipeline.push({ $sort: { [sortBy]: sortOrder } });
+
+//   // ✅ Lookup owner details
+//   pipeline.push(
+//     {
+//       $lookup: {
+//         from: "users",
+//         localField: "owner",
+//         foreignField: "_id",
+//         as: "ownerDetails",
+//         pipeline: [{ $project: { username: 1, avatar: 1 } }],
+//       },
+//     },
+//     { $unwind: "$ownerDetails" }
+//   );
+
+//   // ✅ Fix Pagination: Use `$facet` to return total count and paginated data
+//   const pageInt = parseInt(page, 10);
+//   const limitInt = parseInt(limit, 10);
+
+//   pipeline.push({
+//     $facet: {
+//       metadata: [{ $count: "total" }],
+//       data: [{ $skip: (pageInt - 1) * limitInt }, { $limit: limitInt }],
+//     },
+//   });
+
+//   // ✅ Fetch videos
+//   const result = await Video.aggregate(pipeline);
+
+//   // ✅ Handle empty result case
+//   const videos = result[0]?.data || [];
+//   const total = result[0]?.metadata[0]?.total || 0;
+
+//   return res.status(200).json(
+//     new ApiResponse(200, { docs: videos, total, hasNextPage: total > pageInt * limitInt }, "Videos fetched successfully")
+//   );
+// });
+
+
+
+
+
+
+
 
 const publishAVideo = asyncHandler(async (req, res) => {
   // TODO: get video, upload to cloudinary, create video
@@ -114,7 +301,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
   }
 
   const videoFileLocalPath = req.files?.videoFile[0]?.path;
-  const thumbnailsLocalPath = req.files?.thumbnails[0]?.path;
+  const thumbnailsLocalPath = req.files?.thumbnail[0]?.path;
 
   if (!videoFileLocalPath || !thumbnailsLocalPath) {
     throw new ApiError(400, "videoFile and thumbnail is reuired");
@@ -138,7 +325,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
       url: videoFile.url,
       public_id: videoFile.public_id,
     },
-    thumbnail: {
+    thumbnails: {
       url: thumbnail.url,
       public_id: thumbnail.public_id,
     },
@@ -188,36 +375,36 @@ const getVideoById = asyncHandler(async (req, res) => {
         foreignField: "_id",
         as: "owner",
         pipeline: [
-          //   {
-          //     $lookup: {
-          //       from: "subscriptions",
-          //       localField: "_id",
-          //       foreignField: "channel",
-          //       as: "subscribers",
-          //     },
-          //   },
-          //   {
-          //     $addFields: {
-          //       subscribersCount: {
-          //         $size: "$subscribers",
-          //       },
-          //       isSubscribed: {
-          //         $cond: {
-          //           if: {
-          //             $in: [req.user?._id, "$subscribers.subscriber"],
-          //           },
-          //           then: true,
-          //           else: false,
-          //         },
-          //       },
-          //     },
-          //   },
+            {
+              $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscribers",
+              },
+            },
+            {
+              $addFields: {
+                subscribersCount: {
+                  $size: "$subscribers",
+                },
+                isSubscribed: {
+                  $cond: {
+                    if: {
+                      $in: [req.user?._id, "$subscribers.subscriber"],
+                    },
+                    then: true,
+                    else: false,
+                  },
+                },
+              },
+            },
           {
             $project: {
               username: 1,
               "avatar.url": 1,
-              //   subscribersCount: 1,
-              //   isSubscribed: 1,
+                subscribersCount: 1,
+                isSubscribed: 1,
             },
           },
         ],
@@ -228,6 +415,9 @@ const getVideoById = asyncHandler(async (req, res) => {
         likesCounts: {
           $size: "$likes",
         },
+        owner: {
+          $first: "$owner"
+      },
         isLiked: {
           $cond: {
             if: { $in: [req.user?._id, "$likes.likedBy"] },
@@ -235,11 +425,6 @@ const getVideoById = asyncHandler(async (req, res) => {
             else: false,
           },
         },
-      },
-    },
-    {
-      $set: {
-        $first: "$owner",
       },
     },
     {
@@ -363,7 +548,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
     throw new ApiError(400, "video not found");
   }
 
-  if (video?.owner.tostring() !== req.user?._id) {
+  if (video?.owner.tostring() !== req.user?._id.tostring()) {
     throw new ApiError(400, "only owner can delete their video");
   }
 
@@ -401,7 +586,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     throw new ApiError(400, "video not found");
   }
 
-  if (video?.owner.tostring() !== req.user?._id) {
+  if (video.owner.toString() !== req.user?._id.toString()) {
     throw new ApiError(
       401,
       "You can't toogle publish status as you are not the owner"
@@ -429,7 +614,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { isPublished: toggledVideoPublish.isPublished },
+        toggledVideoPublish,
         "Video publish toggled successfully"
       )
     );

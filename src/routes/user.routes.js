@@ -34,6 +34,8 @@ router.post(
   registerUser
 );
 
+
+
 router.post("/login", loginUser);
 
 //secured routes

@@ -9,7 +9,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 const getChannelStats = asyncHandler(async (req, res) => {
   // TODO: Get the channel stats like total video views, total subscribers, total videos, total likes etc.
 
-  const { userId } = req.user?._id;
+  const userId = req.user?._id;
 
   const totalSubscribers = await Subscription.aggregate([
     {
@@ -19,7 +19,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
     },
     {
       $group: {
-        id: null,
+        _id: null,
         subscribersCount: {
           $sum: 1,
         },
@@ -48,9 +48,9 @@ const getChannelStats = asyncHandler(async (req, res) => {
         totalLikes: {
           $size: "$likes",
         },
+        totalViews: "$views",
+        totalVideos: 1,
       },
-      totalViews: "$views",
-      totalVideos: 1,
       //Purpose: Each document represents one video. means add field with value 1 because it is not in docs.
       //$group stage, we use $sum: 1 to count the total videos.
     },
@@ -86,7 +86,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
 const getChannelVideos = asyncHandler(async (req, res) => {
   // TODO: Get all the videos uploaded by the channel
 
-  const { userId } = req.user?._id;
+  const userId = req.user?._id;
 
   const video = await Video.aggregate([
     {
@@ -105,10 +105,7 @@ const getChannelVideos = asyncHandler(async (req, res) => {
     {
       $addFields: {
         likesCount: {
-          $size: "$likes",
-        },
-        createdAt: {
-          $dateToParts: { date: "$createdAt" },
+          $size: { $ifNull: ["$likes", []] },
         },
       },
     },
@@ -118,10 +115,17 @@ const getChannelVideos = asyncHandler(async (req, res) => {
       },
     },
     {
+      $addFields: {
+        createdAt: {
+          $dateToParts: { date: "$createdAt" },
+        },
+      },
+    },
+    {
       $project: {
         _id: 1,
         "videoFile.url": 1,
-        "thumbnails.url": 1,
+        thumbnails: 1,
         title: 1,
         description: 1,
         duration: 1,
@@ -129,10 +133,10 @@ const getChannelVideos = asyncHandler(async (req, res) => {
         isPublished: 1,
         createdAt: {
           year: 1,
-          month: 1,
+          month:  1,
           day: 1,
           hour: 1,
-          minute: 1,
+          minute:  1,
         },
         likesCount: 1,
       },

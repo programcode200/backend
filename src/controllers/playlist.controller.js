@@ -89,9 +89,9 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
         _id: 1,
         name: 1,
         description: 1,
-        "$owner.username": 1,
-        "$owner.fullName": 1,
-        "$owner.avatar.url": 1,
+        "owner.username": 1,
+        "owner.fullName": 1,
+        "owner.avatar.url": 1,
         totalVideos: 1,
         totalLikes: 1,
         updatedAt: 1,
@@ -149,13 +149,13 @@ const getPlaylistById = asyncHandler(async (req, res) => {
     {
       $addFields: {
         totalVideos: {
-          $size: "videos",
+          $size: "$videos",
         },
         totalViews: {
           $sum: "$videos.views",
         },
         owner: {
-          $first: "owner",
+          $first: "$owner",
         },
       },
     },

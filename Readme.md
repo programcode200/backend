@@ -835,3 +835,16 @@ use inside $project to count the number of elements in an array.
 When to use $size?
 When you need to count items inside an array.
 Used inside $project to add a new field with the count.
+
+# $search
+
+{
+  "mappings": {
+    "dynamic": false,
+    "fields": {
+      "title": { "type": "string" },
+      "description": { "type": "string" },
+      "tags": { "type": "array", "elements": { "type": "string" } }
+    }
+  }
+}
