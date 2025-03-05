@@ -23,6 +23,13 @@ app.use(express.urlencoded({ extended: true, limit: "16mb" }));
 app.use(express.static("public"));
 app.use(cookieParser()); // from my server i can access cookies and set cookies from user browser.
 
+
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
+
+
 //routes import
 import userRouter from "./routes/user.routes.js";
 import healthcheckRouter from "./routes/healthcheck.routes.js";
