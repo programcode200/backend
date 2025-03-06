@@ -31,82 +31,145 @@ const generateAccessAndRefreshToken = async (userId) => {
   }
 };
 
+// const registerUser = asyncHandler(async (req, res) => {
+  
+//   console.log("Incoming Request Body:", req.body); // ✅ Debugging
+//   console.log("Incoming Files:", req.files);
+  
+//   const { name, email, fullName, password, username } = req.body;
+//   if (
+//     [name, email, fullName, password, username].some(
+//       (field) => field?.trim() === ""
+//     ) //it will return true or false
+//   ) {
+//     throw new ApiError(400, "Field should not be empty");
+//   }
+
+//   const existedUser = await User.findOne({
+//     $or: [{ username }, { email }],
+//   });
+
+//   if (existedUser) {
+//     throw new ApiError(409, "email or username already existed!");
+//   }
+//   console.log("userexisted", existedUser);
+
+//   const avatarLocalPath = req.files?.avatar[0]?.path; //files option get by multer, avatar name come from user.routes middleware
+
+//   console.log("files", req.files);
+//   console.log("avatarLocalPath", avatarLocalPath);
+
+//   //check that avatar img is upload or not
+//   if (!avatarLocalPath) {
+//     throw new ApiError(400, "Avatar file is Required");
+//   }
+
+//   let coverImageLocalPath;
+//   if (
+//     req.files &&
+//     Array.isArray(req.files.coverImage) &&
+//     req.files.coverImage.length >= 0
+//   ) {
+//     coverImageLocalPath = req.files.coverImage[0].path;
+//   }
+
+//   //upload files on cloudinary, use await because take a time to upload img on cloudinary
+//   const avatar = await uploadOnCloudinary(avatarLocalPath);
+//   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
+//   console.log("avatar res obj ", avatar);
+
+//   if (!avatar) {
+//     throw new ApiError(400, "Avatar not upload");
+//   }
+
+//   const user = await User.create({
+//     username: username.toLowerCase(),
+//     avatar: avatar?.url,
+//     coverImage: coverImage?.url || "",
+//     email,
+//     password,
+//     fullName,
+//   });
+
+//   console.log("register user", user);
+
+//   //select field that you want to select, we write field that that you dont want to select because by default all are selected.
+//   const createdUser = await User.findById(user._id).select(
+//     "-password -refreshToken" // use -neg to not select
+//   );
+
+//   if (!createdUser) {
+//     throw new ApiError(500, "Something went wrong while register user");
+//   }
+
+//   return res
+//     .status(201)
+//     .json(new ApiResponse(200, createdUser, "user registed."));
+// });
+
+
+
+
+
+
 const registerUser = asyncHandler(async (req, res) => {
-  
-  console.log("Incoming Request Body:", req.body); // ✅ Debugging
+  console.log("Incoming Request Body:", req.body);
   console.log("Incoming Files:", req.files);
+
+  const { email, fullName, password, username } = req.body;
   
-  const { name, email, fullName, password, username } = req.body;
-  if (
-    [name, email, fullName, password, username].some(
-      (field) => field?.trim() === ""
-    ) //it will return true or false
-  ) {
+  if ([email, fullName, password, username].some(field => field?.trim() === "")) {
     throw new ApiError(400, "Field should not be empty");
   }
 
-  const existedUser = await User.findOne({
-    $or: [{ username }, { email }],
-  });
+  const existedUser = await User.findOne({ $or: [{ username }, { email }] });
 
   if (existedUser) {
-    throw new ApiError(409, "email or username already existed!");
-  }
-  console.log("userexisted", existedUser);
-
-  const avatarLocalPath = req.files?.avatar[0]?.path; //files option get by multer, avatar name come from user.routes middleware
-
-  console.log("files", req.files);
-  console.log("avatarLocalPath", avatarLocalPath);
-
-  //check that avatar img is upload or not
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar file is Required");
+    throw new ApiError(409, "Email or username already exists!");
   }
 
-  let coverImageLocalPath;
-  if (
-    req.files &&
-    Array.isArray(req.files.coverImage) &&
-    req.files.coverImage.length >= 0
-  ) {
-    coverImageLocalPath = req.files.coverImage[0].path;
+  // ✅ Get Avatar Buffer & Format
+  const avatarFile = req.files?.avatar?.[0]; 
+  if (!avatarFile) throw new ApiError(400, "Avatar file is required");
+
+  const avatarBuffer = avatarFile.buffer;
+  const avatarFormat = avatarFile.mimetype.split("/")[1];
+
+  // ✅ Get Cover Image Buffer & Format (Optional)
+  let coverImage = "";
+  if (req.files?.coverImage?.[0]) {
+    const coverImageBuffer = req.files.coverImage[0].buffer;
+    const coverImageFormat = req.files.coverImage[0].mimetype.split("/")[1];
+    coverImage = await uploadOnCloudinary(coverImageBuffer, coverImageFormat);
   }
 
-  //upload files on cloudinary, use await because take a time to upload img on cloudinary
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  // ✅ Upload Avatar to Cloudinary
+  const avatar = await uploadOnCloudinary(avatarBuffer, avatarFormat);
+  if (!avatar) throw new ApiError(400, "Avatar upload failed");
 
-  console.log("avatar res obj ", avatar);
-
-  if (!avatar) {
-    throw new ApiError(400, "Avatar not upload");
-  }
-
+  // ✅ Save User to Database
   const user = await User.create({
     username: username.toLowerCase(),
-    avatar: avatar?.url,
-    coverImage: coverImage?.url || "",
+    avatar: avatar.secure_url, // Use Cloudinary URL
+    coverImage: coverImage?.secure_url || "",
     email,
     password,
     fullName,
   });
 
-  console.log("register user", user);
+  // ✅ Remove Sensitive Data from Response
+  const createdUser = await User.findById(user._id).select("-password -refreshToken");
 
-  //select field that you want to select, we write field that that you dont want to select because by default all are selected.
-  const createdUser = await User.findById(user._id).select(
-    "-password -refreshToken" // use -neg to not select
-  );
+  if (!createdUser) throw new ApiError(500, "User registration failed");
 
-  if (!createdUser) {
-    throw new ApiError(500, "Something went wrong while register user");
-  }
-
-  return res
-    .status(201)
-    .json(new ApiResponse(200, createdUser, "user registed."));
+  return res.status(201).json(new ApiResponse(200, createdUser, "User registered successfully."));
 });
+
+
+
+
+
 
 const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
