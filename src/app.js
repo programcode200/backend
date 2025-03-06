@@ -17,7 +17,7 @@ app.use(
     origin: allowedOrigins,
     // origin: "https://frontend-youtube-kappa.vercel.app",
     credentials: true,
-    methods: "GET, POST, PUT, PATCH, DELETE", // ✅ Allowed request methods
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"], 
     allowedHeaders: "Content-Type,Authorization", // ✅ Allowed headers
   })
 );
