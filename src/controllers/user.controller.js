@@ -162,18 +162,14 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
-    req.user._id, //req.user._id comes from the verifyJWT middleware, which ensures that only authenticated users can log out.
+    req.user._id,
     {
-      $set: { refreshToken: undefined },
-
-      // $unset: {
-      //   refreshToken: 1, //this removes the field from document.
-      // },
+        $unset: {
+            refreshToken: 1 // removes field from document
+        }
     },
-    {
-      new: true, //Return the modified user object after the update
-    }
-  );
+    { new: true }
+);
 
   const options = {
     httpOnly: true,
@@ -270,8 +266,7 @@ const changeNewPassword = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  return res
-    .status(200)
+  return res.status(200)
     .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
 });
 
