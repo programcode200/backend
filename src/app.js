@@ -3,20 +3,24 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 
-dotenv.config(); 
+dotenv.config();
 const app = express();
 
 //use, use for middleware and configuration settings
+const allowedOrigins = process.env.CORS_ORIGIN?.trim()
+  ? process.env.CORS_ORIGIN
+  : "https://frontend-youtube-kappa.vercel.app";
+
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: allowedOrigins,
     // origin: "https://frontend-youtube-kappa.vercel.app",
     credentials: true,
     methods: "GET, POST, PUT, PATCH, DELETE", // ✅ Allowed request methods
     allowedHeaders: "Content-Type,Authorization", // ✅ Allowed headers
   })
 );
-
 
 console.log("Allowed CORS Origin:", process.env.CORS_ORIGIN);
 
@@ -25,12 +29,9 @@ app.use(express.urlencoded({ extended: true, limit: "16mb" }));
 app.use(express.static("public"));
 app.use(cookieParser()); // from my server i can access cookies and set cookies from user browser.
 
-
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
-
-
 
 //routes import
 import userRouter from "./routes/user.routes.js";
@@ -54,5 +55,5 @@ app.use("/api/v1/likes", likeRouter);
 app.use("/api/v1/playlist", playlistRouter);
 app.use("/api/v1/dashboard", dashboardRouter);
 
-export default app;
 
+export default app;
