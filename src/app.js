@@ -12,7 +12,7 @@ app.use(
     origin: process.env.CORS_ORIGIN,
     // origin: "https://frontend-youtube-kappa.vercel.app",
     credentials: true,
-    methods: "GET,POST,PUT,DELETE", // ✅ Allowed request methods
+    methods: "GET, POST, PUT, PATCH, DELETE", // ✅ Allowed request methods
     allowedHeaders: "Content-Type,Authorization", // ✅ Allowed headers
   })
 );
