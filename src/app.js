@@ -9,8 +9,8 @@ const app = express();
 //use, use for middleware and configuration settings
 app.use(
   cors({
-    // origin: process.env.CORS_ORIGIN,
-    origin: "https://frontend-youtube-kappa.vercel.app",
+    origin: process.env.CORS_ORIGIN,
+    // origin: "https://frontend-youtube-kappa.vercel.app",
     credentials: true,
     methods: "GET,POST,PUT,DELETE", // ✅ Allowed request methods
     allowedHeaders: "Content-Type,Authorization", // ✅ Allowed headers
