@@ -6,6 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
+
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -122,11 +123,11 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User not found");
   }
 
-  const isPaawordValid = await user.isPasswordCorrect(password); //use user not models User becuase custom methods available in your user
+  const isPasswordValid = await user.isPasswordCorrect(password); //use user not models User becuase custom methods available in your user
 
-  console.log("this is check password, encrypt pass", isPaawordValid);
+  console.log("this is check password, encrypt pass", isPasswordValid);
 
-  if (!isPaawordValid) {
+  if (!isPasswordValid) {
     throw new ApiError(401, "password is not match");
   }
 
@@ -141,6 +142,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true, // Ensures that the cookie cannot be accessed through JavaScript (important for security).
     secure: true, // Ensures that the cookie is only sent over HTTPS (important for security).
+    sameSite: "None"
   };
 
   return res
