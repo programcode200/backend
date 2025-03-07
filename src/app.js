@@ -16,9 +16,9 @@ app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"], 
 
     // origin: "https://frontend-youtube-kappa.vercel.app",
-    // methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"], 
     // allowedHeaders: "Content-Type,Authorization", // ✅ Allowed headers
   })
 );
