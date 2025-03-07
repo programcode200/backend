@@ -11,7 +11,6 @@
 // import { verifyJWT } from "../middleware/auth.middleware.js";
 // import { upload } from "../middleware/multer.middleware.js";
 
-
 // const router = Router();
 // router.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
 
@@ -32,9 +31,6 @@
 //     publishAVideo
 //   );
 
-
-
-
 // router
 //   .route("/:videoId")
 //   .get(getVideoById)
@@ -44,10 +40,6 @@
 // router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
 
 // export default router;
-
-
-
-
 
 import { Router } from "express";
 import {
@@ -67,16 +59,14 @@ const router = Router();
 // ✅ PUBLIC: Get all videos (No authentication required)
 router.get("/", getAllVideos);
 
-// ✅ PUBLIC: Get a single video by ID (No authentication required)
-router.get("/:videoId", getVideoById);
-
-
 // 🔒 PROTECTED ROUTES (Require authentication)
 router.use(verifyJWT); // Apply verifyJWT middleware to protected routes
 
+// ✅ PUBLIC: Get a single video by ID (No authentication required)
+router.get("/:videoId", getVideoById);
+
 // ✅ PUBLIC: Toggle video publish status
 router.put("/toggle/publish/:videoId", togglePublishStatus);
-
 
 router.post(
   "/",

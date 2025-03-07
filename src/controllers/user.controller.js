@@ -521,6 +521,10 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 const getWatchHistory = asyncHandler(async (req, res) => {
   // req.user._id it will return string not mongodb id, but in mongoose it will automatically convert into id
 
+  const user = await User.findById(req.user._id);
+console.log("User's watch history in DB:", user.watchHistory);
+
+
   const userHistory = await User.aggregate([
     {
       $match: {
@@ -576,6 +580,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
       )
     );
 });
+
 
 export {
   registerUser,
