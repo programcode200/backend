@@ -71,7 +71,7 @@ router.get("/", getAllVideos);
 router.get("/:videoId", getVideoById);
 
 // ✅ PUBLIC: Toggle video publish status (No authentication required)
-router.patch("/toggle/publish/:videoId", togglePublishStatus);
+router.put("/toggle/publish/:videoId", togglePublishStatus);
 
 // 🔒 PROTECTED ROUTES (Require authentication)
 router.use(verifyJWT); // Apply verifyJWT middleware to protected routes
@@ -88,6 +88,6 @@ router.post(
 router
   .route("/:videoId")
   .delete(deleteVideo)
-  .put(upload.single("thumbnail"), updateVideo);
+  .patch(upload.single("thumbnail"), updateVideo);
 
 export default router;
