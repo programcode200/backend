@@ -17,9 +17,9 @@ app.use(
     origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"], 
+    allowedHeaders: "Content-Type,Authorization", // ✅ Allowed headers
 
     // origin: "https://frontend-youtube-kappa.vercel.app",
-    // allowedHeaders: "Content-Type,Authorization", // ✅ Allowed headers
   })
 );
 
@@ -28,8 +28,8 @@ app.options("*", cors()); // ✅ Allow all preflight requests
 
 console.log("Allowed CORS Origin:", process.env.CORS_ORIGIN);
 
-app.use(express.json({ limit: "16mb" }));
-app.use(express.urlencoded({ extended: true, limit: "16mb" }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.static("public"));
 app.use(cookieParser()); // from my server i can access cookies and set cookies from user browser.
 
