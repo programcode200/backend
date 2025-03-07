@@ -14,14 +14,14 @@ app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
-    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"], 
-    allowedHeaders: "Content-Type,Authorization", // ✅ Allowed headers
+    // methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"], 
+    // allowedHeaders: "Content-Type,Authorization", // ✅ Allowed headers
 
     // origin: "https://frontend-youtube-kappa.vercel.app",
   })
 );
 
-app.options("*", cors()); // ✅ Allow all preflight requests
+// app.options("*", cors()); // ✅ Allow all preflight requests
 
 
 console.log("Allowed CORS Origin:", process.env.CORS_ORIGIN);
