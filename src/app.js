@@ -7,7 +7,6 @@ dotenv.config();
 const app = express();
 
 //use, use for middleware and configuration settings
-
 // const allowedOrigins = process.env.CORS_ORIGIN?.trim()
 //   ? process.env.CORS_ORIGIN
 //   : "https://frontend-youtube-kappa.vercel.app";
