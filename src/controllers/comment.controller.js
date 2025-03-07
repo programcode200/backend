@@ -250,7 +250,7 @@ const updateComment = asyncHandler(async (req, res) => {
     throw new ApiError(400, "content not found");
   }
 
-  if (comment?.owner.toString() !== req.user?._id.toString()) {
+  if (comment.owner?.toString() !== req.user?._id.toString()) {
     throw new ApiError(401, "Only comment owner can edit their comment");
   }
 
@@ -270,7 +270,7 @@ const updateComment = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(res.ApiResponse(200, updateComment, "comment updated successfully"));
+    .json(new ApiResponse(200, updateComment, "comment updated successfully"));
 });
 
 const deleteComment = asyncHandler(async (req, res) => {

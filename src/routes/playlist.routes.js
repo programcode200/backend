@@ -19,12 +19,12 @@ router.route("/").post(createPlaylist)
 router
     .route("/:playlistId")
     .get(getPlaylistById)
-    .patch(updatePlaylist)
+    .put(updatePlaylist)
     .delete(deletePlaylist);
 
-router.route("/add/:videoId/:playlistId").patch(addVideoToPlaylist);
-router.route("/remove/:videoId/:playlistId").patch(removeVideoFromPlaylist);
+router.route("/add/:videoId/:playlistId").put(addVideoToPlaylist);
+router.route("/remove/:videoId/:playlistId").put(removeVideoFromPlaylist);
 
 router.route("/user/:userId").get(getUserPlaylists);
 
-export default router
+export default router; 

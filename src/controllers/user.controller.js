@@ -304,7 +304,7 @@ const accessrefreshToken = asyncHandler(async (req, res) => {
 const changeNewPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword, confirmPassword } = req.body;
 
-  if (!(oldPassword || newPassword)) {
+  if (!oldPassword || !newPassword) {
     throw new ApiError(401, "Both password are required");
   }
 
@@ -313,6 +313,7 @@ const changeNewPassword = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findById(req.user?._id);
+
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
   if (!isPasswordCorrect) {
@@ -340,7 +341,11 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All field are required");
   }
 
-  const user = User.findByIdAndUpdate(
+  if (!req.user?._id) {
+    throw new ApiError(400, "User ID is missing. Please re-authenticate.");
+  }  
+
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
@@ -350,6 +355,11 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     },
     { new: true } //get updated infomation with not updated field
   ).select("-password");
+
+  if (!user) {
+    throw new ApiError(400, "User not found");
+  }
+  
 
   return res
     .status(200)
@@ -375,7 +385,10 @@ const updateAvatar = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Error while while uploading avatar");
   }
 
-  const user = User.findByIdAndUpdate(
+  console.log("log avatar",avatar);
+  
+
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
@@ -409,7 +422,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Error while while uploading avatar");
   }
 
-  const user = User.findByIdAndUpdate(
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
