@@ -88,6 +88,6 @@ router.post(
 router
   .route("/:videoId")
   .delete(deleteVideo)
-  .patch(upload.single("thumbnail"), updateVideo);
+  .put(upload.single("thumbnail"), updateVideo);
 
 export default router;

@@ -6,7 +6,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
-
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -32,10 +31,10 @@ const generateAccessAndRefreshToken = async (userId) => {
 };
 
 // const registerUser = asyncHandler(async (req, res) => {
-  
+
 //   console.log("Incoming Request Body:", req.body); // ✅ Debugging
 //   console.log("Incoming Files:", req.files);
-  
+
 //   const { name, email, fullName, password, username } = req.body;
 //   if (
 //     [name, email, fullName, password, username].some(
@@ -108,18 +107,12 @@ const generateAccessAndRefreshToken = async (userId) => {
 //     .json(new ApiResponse(200, createdUser, "user registed."));
 // });
 
-
-
-
-
-
 const registerUser = asyncHandler(async (req, res) => {
-  console.log("Incoming Request Body:", req.body);
-  console.log("Incoming Files:", req.files);
-
   const { email, fullName, password, username } = req.body;
-  
-  if ([email, fullName, password, username].some(field => field?.trim() === "")) {
+
+  if (
+    [email, fullName, password, username].some((field) => field?.trim() === "")
+  ) {
     throw new ApiError(400, "Field should not be empty");
   }
 
@@ -130,8 +123,11 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // ✅ Get Avatar Buffer & Format
-  const avatarFile = req.files?.avatar?.[0]; 
-  if (!avatarFile) throw new ApiError(400, "Avatar file is required");
+  const avatarFile = req.files?.avatar?.[0];
+
+  if (!avatarFile) {
+    throw new ApiError(400, "Avatar file is required");
+  }
 
   const avatarBuffer = avatarFile.buffer;
   const avatarFormat = avatarFile.mimetype.split("/")[1];
@@ -159,17 +155,16 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   // ✅ Remove Sensitive Data from Response
-  const createdUser = await User.findById(user._id).select("-password -refreshToken");
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
 
   if (!createdUser) throw new ApiError(500, "User registration failed");
 
-  return res.status(201).json(new ApiResponse(200, createdUser, "User registered successfully."));
+  return res
+    .status(201)
+    .json(new ApiResponse(200, createdUser, "User registered successfully."));
 });
-
-
-
-
-
 
 const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -205,7 +200,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true, // Ensures that the cookie cannot be accessed through JavaScript (important for security).
     secure: true, // Ensures that the cookie is only sent over HTTPS (important for security).
-    sameSite: "None"
+    sameSite: "None",
   };
 
   return res
@@ -229,17 +224,17 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-        $unset: {
-            refreshToken: 1 // removes field from document
-        }
+      $unset: {
+        refreshToken: 1, // removes field from document
+      },
     },
     { new: true }
-);
+  );
 
   const options = {
     httpOnly: true,
     secure: true,
-    sameSite: "None"
+    sameSite: "None",
   };
 
   return res
@@ -333,7 +328,8 @@ const changeNewPassword = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  return res.status(200)
+  return res
+    .status(200)
     .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
 });
 
@@ -361,15 +357,21 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 });
 
 const updateAvatar = asyncHandler(async (req, res) => {
-  const avatarLocalPath = req.file.path;
 
-  if (!avatarLocalPath) {
+  // const avatarLocalPath = req.file.path;
+
+  const avatarBuffer = req.file?.buffer;
+  const avatarFormat = req.file?.mimetype.split("/")[1];
+
+  if (!avatarBuffer) {
     throw new ApiError(400, "Avatar file is missing");
   }
 
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
+  // const avatar = await uploadOnCloudinary(avatarLocalPath);
 
-  if (!avatar.url) {
+  const avatar = await uploadOnCloudinary(avatarBuffer, avatarFormat, "image");
+
+  if (!avatar.secure_url) {
     throw new ApiError(400, "Error while while uploading avatar");
   }
 
@@ -377,7 +379,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
     req.user?._id,
     {
       $set: {
-        avatar: avatar.url,
+        avatar: avatar.secure_url,
       },
     },
     { new: true }
@@ -389,15 +391,21 @@ const updateAvatar = asyncHandler(async (req, res) => {
 });
 
 const updateCoverImage = asyncHandler(async (req, res) => {
-  const coverImageLocalPath = req.file.path;
+  // const coverImageLocalPath = req.file.path;
 
-  if (!coverImageLocalPath) {
+  const coverImageBuffer = req.file?.buffer;
+  const coverImageFormat = req.file?.mimetype.split("/")[1];
+
+  if (!coverImageBuffer) {
     throw new ApiError(400, "Cover Image file is missing");
   }
 
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  // const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
-  if (!coverImage.url) {
+  const coverImage = await uploadOnCloudinary(coverImageBuffer, coverImageFormat, "image");
+
+
+  if (!coverImage.secure_url) {
     throw new ApiError(400, "Error while while uploading avatar");
   }
 
@@ -405,7 +413,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     req.user?._id,
     {
       $set: {
-        coverImage: coverImage.url,
+        coverImage: coverImage.secure_url,
       },
     },
     { new: true }

@@ -22,7 +22,7 @@ app.use(
   })
 );
 
-app.options("*", cors()); // ✅ Allow all preflight requests
+// app.options("*", cors()); // ✅ Allow all preflight requests
 
 
 console.log("Allowed CORS Origin:", process.env.CORS_ORIGIN);

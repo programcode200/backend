@@ -111,7 +111,17 @@ import { uploadOnCloudinary, deleteOnCloudinary } from "../utils/cloudnary.js";
 // });
 
 
+
+
+
+
+
+
 // get all videos based on query, sort, pagination
+
+
+
+
 const getAllVideos = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
   console.log("Query Params:", { page, limit, query, sortBy, sortType, userId });
@@ -300,33 +310,42 @@ const publishAVideo = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
-  const videoFileLocalPath = req.files?.videoFile[0]?.path;
-  const thumbnailsLocalPath = req.files?.thumbnail[0]?.path;
+  // const videoFileLocalPath = req.files?.videoFile[0]?.path;
+  // const thumbnailsLocalPath = req.files?.thumbnail[0]?.path;
 
-  if (!videoFileLocalPath || !thumbnailsLocalPath) {
-    throw new ApiError(400, "videoFile and thumbnail is reuired");
+  // if (!videoFileLocalPath || !thumbnailsLocalPath) {
+  //   throw new ApiError(400, "videoFile and thumbnail is reuired");
+  // }
+
+  // const videoFile = await uploadOnCloudinary(videoFileLocalPath);
+  // const thumbnail = await uploadOnCloudinary(thumbnailsLocalPath);
+
+
+  const videoFileBuffer = req.files?.videoFile?.[0]?.buffer;
+  const thumbnailBuffer = req.files?.thumbnail?.[0]?.buffer;
+  const videoFormat = req.files?.videoFile?.[0]?.mimetype.split("/")[1];
+  const thumbnailFormat = req.files?.thumbnail?.[0]?.mimetype.split("/")[1];
+
+  if (!videoFileBuffer || !thumbnailBuffer) {
+    throw new ApiError(400, "videoFile and thumbnail are required");
   }
 
-  const videoFile = await uploadOnCloudinary(videoFileLocalPath);
-  const thumbnail = await uploadOnCloudinary(thumbnailsLocalPath);
-
-  console.log("videofile data", videoFile);
-  console.log("thumbnail data", thumbnail);
+  const videoFile = await uploadOnCloudinary(videoFileBuffer, videoFormat, "video");
+  const thumbnail = await uploadOnCloudinary(thumbnailBuffer, thumbnailFormat, "image");
 
   if (!videoFile || !thumbnail) {
-    throw new ApiError(
-      500,
-      "videoFile and thumbnail is not upload on cloudinary"
-    );
+    throw new ApiError(500, "videoFile and thumbnail is not uploaded on Cloudinary");
   }
+
+
 
   const video = await Video.create({
     videoFile: {
-      url: videoFile.url,
+      url: videoFile.secure_url,
       public_id: videoFile.public_id,
     },
     thumbnails: {
-      url: thumbnail.url,
+      url: thumbnail.secure_url,
       public_id: thumbnail.public_id,
     },
     duration: videoFile.duration,
@@ -493,14 +512,19 @@ const updateVideo = asyncHandler(async (req, res) => {
   //deleting old thumbnail and updating with new one
   const thumbnailToDelete = video.thumbnail.public_id;
 
-  const thumbnailLocalPath = req.file?.path;
+  // const thumbnailLocalPath = req.file?.path;
 
-  if (!thumbnailLocalPath) {
-    throw new ApiError(400, "thumbmail is required");
+  const thumbnailBuffer = req.file?.buffer;
+  const thumbnailFormat = req.file?.mimetype.split("/")[1];
+
+  if (!thumbnailBuffer) {
+    throw new ApiError(400, "thumbnail is required");
   }
 
-  const thumbmail = await uploadOnCloudinary(thumbnailLocalPath);
-  if (!thumbmail) {
+  // const thumbmail = await uploadOnCloudinary(thumbnailLocalPath);
+  const thumbnail = await uploadOnCloudinary(thumbnailBuffer, thumbnailFormat, "image");
+
+  if (!thumbnail) {
     throw new ApiError(400, "thumbnail not upload please try again");
   }
 
@@ -510,9 +534,9 @@ const updateVideo = asyncHandler(async (req, res) => {
       $set: {
         title: title,
         description: description,
-        thumbmail: {
-          public_id: thumbmail.public_id,
-          url: thumbmail.url,
+        thumbnails: {
+          public_id: thumbnail.public_id,
+          url: thumbnail.secure_url,
         },
       },
     },
